@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ModernTheme">
+        <item name="android:colorPrimary">@color/std_main</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+
+    </style>
+    <style name="animationChooser">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+    <style name="pbBig" parent="@android:style/Widget.DeviceDefault.ProgressBar.Large">
+        <item name="android:colorAccent">@color/std_main</item>
+    </style>
+</resources>

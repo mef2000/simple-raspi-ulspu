@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:background="?android:selectableItemBackground"
+    android:layout_height="@dimen/item_list_size">
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/std_main"
+        android:textSize="@dimen/item_font_size"
+        android:text="NOT_INIT"
+        android:id="@+id/lwGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
