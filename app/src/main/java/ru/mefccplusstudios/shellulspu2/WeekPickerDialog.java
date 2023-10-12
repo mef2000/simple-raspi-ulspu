@@ -10,9 +10,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import arch.adapters.WeekAdapter;
+import arch.main.Kernel;
 
 public class WeekPickerDialog extends Dialog {
     private final MainActivity context;
+    private final Kernel kernel;
     private final Button next, undo, cancel;
     private final TextView tvdate;
     private final ListView lw;
@@ -21,6 +23,7 @@ public class WeekPickerDialog extends Dialog {
     public WeekPickerDialog(MainActivity context) {
         super(context);
         this.context = context;
+        this.kernel = context.kernel;
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.data_picker);
         this.setCancelable(true);
@@ -36,8 +39,8 @@ public class WeekPickerDialog extends Dialog {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               TimeUtils.getYMApplyBy(1);
-               tvdate.setText(TimeUtils.getNamedMonth(TimeUtils.FOCUS_MONTH)+" "+TimeUtils.FOCUS_YEAR);
+               kernel.time.getYMApplyBy(1);
+               tvdate.setText(kernel.time.getNamedMonth(kernel.FOCUS_MONTH)+" "+kernel.FOCUS_YEAR);
                prepareRangers();
             }
         });
@@ -50,8 +53,8 @@ public class WeekPickerDialog extends Dialog {
         undo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TimeUtils.getYMApplyBy(-1);
-                tvdate.setText(TimeUtils.getNamedMonth(TimeUtils.FOCUS_MONTH)+" "+TimeUtils.FOCUS_YEAR);
+                kernel.time.getYMApplyBy(-1);
+                tvdate.setText(kernel.time.getNamedMonth(kernel.FOCUS_MONTH)+" "+kernel.FOCUS_YEAR);
                 prepareRangers();
             }
         });
@@ -61,11 +64,9 @@ public class WeekPickerDialog extends Dialog {
         lw.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 DateRange dr = wa.getItem(position);
-                TimeUtils.SAVED_WEEK = position;
-                TimeUtils.SAVED_MONTH = TimeUtils.FOCUS_MONTH;
-               //if(position==0) TimeUtils.SAVED_MONTH = dr.END_MONTH;
-               //else TimeUtils.SAVED_MONTH = dr.BEGIN_MONTH;
-               TimeUtils.SAVED_YEAR = TimeUtils.FOCUS_YEAR;
+                kernel.SAVED_WEEK = position;
+                kernel.SAVED_MONTH = kernel.FOCUS_MONTH;
+               kernel.SAVED_YEAR = kernel.FOCUS_YEAR;
                dismiss();
                context.updateUI();
                context.buildRaspiByRange();
@@ -74,15 +75,15 @@ public class WeekPickerDialog extends Dialog {
         });
     }
     @Override public void show() {
-        tvdate.setText(TimeUtils.getNamedMonth(TimeUtils.FOCUS_MONTH)+" "+TimeUtils.FOCUS_YEAR);
+        tvdate.setText(kernel.time.getNamedMonth(kernel.FOCUS_MONTH)+" "+kernel.FOCUS_YEAR);
         //TimeUtils.pullDateRangers(TimeUtils.TOTAL_MONTH, TimeUtils.TOTAL_YEAR);
         prepareRangers();
         super.show();
     }
     public void prepareRangers() {
-        TimeUtils.pullDateRangers(TimeUtils.FOCUS_MONTH, TimeUtils.FOCUS_YEAR);
+        kernel.time.pullDateRangers(kernel.FOCUS_MONTH, kernel.FOCUS_YEAR);
         wa.clear();
-        wa.addAll(TimeUtils.drangers);
+        wa.addAll(kernel.time.drangers);
         wa.notifyDataSetChanged();
     }
 }

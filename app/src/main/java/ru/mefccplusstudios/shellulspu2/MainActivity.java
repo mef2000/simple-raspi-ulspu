@@ -1,18 +1,9 @@
 package ru.mefccplusstudios.shellulspu2;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.content.SharedPreferences;
-
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.text.format.Time;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DigitalClock;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -25,26 +16,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.net.ssl.HttpsURLConnection;
-
-import arch.main.Async;
-import arch.main.Data;
 import arch.main.DataFill;
+import arch.main.Kernel;
 import arch.main.Lesson;
 import arch.main.RuntimeEvent;
 import arch.views.DayBoard;
 
 public class MainActivity extends Activity {
-    private SharedPreferences sp;
+    public final Kernel kernel = new Kernel();
 
     private TextClock tc;
     private ImageButton update;
@@ -56,9 +42,6 @@ public class MainActivity extends Activity {
     private LinearLayout weekp;
 
     private Button group;
-    public Handler uiManager;
-
-
     private RuntimeEvent rerror;
 
     private ScrollView scrollz;
@@ -66,17 +49,15 @@ public class MainActivity extends Activity {
     private TextView loadtv;
     private LinearLayout lload, content;
 
-    private RuntimeEvent load_groups, load_prepod, load_aud, levent_group;
-    //private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-       wpd = new WeekPickerDialog(this);
+        kernel.settings = getSharedPreferences("kon_games_global", MODE_PRIVATE);
+        wpd = new WeekPickerDialog(this);
         gpd = new GroupPickerDialog(this);
         errdial = new ErrorDialog(this);
-        sp = getSharedPreferences("kon_games_global", MODE_PRIVATE);
-        setContentView(R.layout.main_layout);
 
+        setContentView(R.layout.main_layout);
         scrollz = findViewById(R.id.ScrollZ);
         lload = findViewById(R.id.llLoad);
         loadpb = findViewById(R.id.Progressable);
@@ -94,7 +75,7 @@ public class MainActivity extends Activity {
         weekp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               wpd.show();// dpg.show();
+               wpd.show();
             }
         });
         group.setOnClickListener(new View.OnClickListener() {
@@ -106,15 +87,9 @@ public class MainActivity extends Activity {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buildRaspiByGroups();
+                buildRaspiByParams();
             }
         });
-        uiManager = new Handler() {
-            @Override public void handleMessage(Message msg) {
-                RuntimeEvent re = (RuntimeEvent) msg.obj;
-                if(re!=null) re.postWorkMainUI();
-            }
-        };
 
         rerror = new RuntimeEvent() {
             @Override
@@ -126,76 +101,56 @@ public class MainActivity extends Activity {
                 update.setEnabled(true);
                 group.setEnabled(true);
                 loadtv.setText("Упс! Кажется произошла ошибка. Попробуйте ещё раз, но позже");
-                if(Data.isDebugMode) errdial.show();
+                if(kernel.isDebugMode) errdial.show();
             }
         };
-        createRuntimes();
-        //loadGroupsList();
-       // loadAudsList();
-        //tc.set
     }
     @Override public void onStart() {
         super.onStart();
-        Data.isDebugMode = sp.getBoolean("debug_mode", false);
-        Data.SAVED_GROUP = sp.getString("group", "nullable");
-        Data.PACTIVED_TAB = sp.getInt("atab", 0);
-        Data.ACTIVED_TAB = Data.PACTIVED_TAB;
-        TimeUtils.init();
-        TimeUtils.SAVED_YEAR = sp.getInt("syear", TimeUtils.TOTAL_YEAR);
-        TimeUtils.SAVED_MONTH= sp.getInt("smonth", TimeUtils.TOTAL_MONTH);
-        TimeUtils.SAVED_WEEK= sp.getInt("sweek", 0);
-        TimeUtils.FOCUS_YEAR = TimeUtils.SAVED_YEAR;
-        TimeUtils.FOCUS_MONTH = TimeUtils.SAVED_MONTH;
-        TimeUtils.pullDateRangers(TimeUtils.SAVED_MONTH, TimeUtils.SAVED_YEAR);
-        Async.init(uiManager, rerror);
+        kernel.loadSettings();
+        kernel.time.init();
+        kernel.time.pullDateRangers(kernel.SAVED_MONTH, kernel.SAVED_YEAR);
+        kernel.async.init(rerror);
         gpd.updateState();
-        buildRaspiByGroups();
-        //buildRaspiByGroups();
-        //TimeUtils.pullDateRangers(TimeUtils.SAVED_MONTH, TimeUtils.SAVED_YEAR);
-        //wpd.show();
+        buildRaspiByParams();
     }
 
     @Override public void onResume() {
         super.onResume();
         tc.setFormat12Hour(null);
         tc.setFormat24Hour("HH:mm");
-        weektv.setText(TimeUtils.getNamedCurrentDayOfWeek().toLowerCase());
-        daytv.setText(TimeUtils.getCurrentData());
+        weektv.setText(kernel.time.getNamedDayOfWeekBy(kernel.time.TOTAL_YEAR, kernel.time.TOTAL_MONTH, kernel.time.TOTAL_DAY).toLowerCase());
+        daytv.setText(kernel.time.getStyledData(
+                kernel.time.TOTAL_YEAR, kernel.time.TOTAL_MONTH, kernel.time.TOTAL_DAY));
         updateUI();
-        //nweek.setText(""+TimeUtils.getNumberWeekOfYear());
     }
     @Override public void onPause() {
         super.onPause();
-        Data.groups.clear();
-        Data.auds.clear();
-        Data.filler.clear();
-        Data.prepods.clear();
-        SharedPreferences.Editor setedit = sp.edit();
-        setedit.putInt("syear", TimeUtils.SAVED_YEAR);
-        setedit.putInt("smonth", TimeUtils.SAVED_MONTH);
-        setedit.putInt("sweek", TimeUtils.SAVED_WEEK);
-        setedit.putInt("atab", Data.ACTIVED_TAB);
-        setedit.putBoolean("debug_mode", Data.isDebugMode);
-        setedit.putString("group", Data.SAVED_GROUP);
-        setedit.commit();
+        kernel.saveSettings();
     }
     public void updateUI() {
-        String month = TimeUtils.getNamedMonth(TimeUtils.SAVED_MONTH);
+        String month =kernel.time.getNamedMonth(kernel.SAVED_MONTH);
         nweek.setText(month.substring(0,1).toUpperCase());
         monthtv.setText(month.substring(1, month.length()).toLowerCase());
-        weekperiod.setText(TimeUtils.buildFromSaved());
-       // buildRaspiByGroups();
-        //System.out.println("RANGE_CHANGED");
+        weekperiod.setText(kernel.time.buildFromSaved());
     }
-    public void createRuntimes() {
-        load_aud = new RuntimeEvent() {
+
+    public RuntimeEvent newDataByParamLoader() {
+        RuntimeEvent re = new RuntimeEvent() {
             @Override
             public void asyncWork() throws Exception {
                 super.asyncWork();
                 String JSON="";
                 HttpsURLConnection connection = null;
                 BufferedReader reader = null;
-                URL url = new URL("https://raspi.ulspu.ru/json/dashboard/rooms");
+
+                String mode = "group";
+                switch(kernel.ACTIVED_TAB){
+                    case 0: mode = "group"; break;
+                    case 1: mode = "teacher"; break;
+                    case 2: mode = "room"; break;
+                }
+                URL url = new URL("https://raspi.ulspu.ru/json/dashboard/events?mode="+mode+"&value="+kernel.SAVED_PARAM);
                 connection = (HttpsURLConnection) url.openConnection();
                 connection.connect();
                 InputStream stream = connection.getInputStream();
@@ -203,6 +158,7 @@ public class MainActivity extends Activity {
                 StringBuffer buffer = new StringBuffer();
                 String line = "";
                 while ((line = reader.readLine()) != null) {
+                    if(isKilled) break;
                     buffer.append(line+"\n");
                 }
                 JSON = buffer.toString();
@@ -212,35 +168,65 @@ public class MainActivity extends Activity {
                 if (reader != null) {
                     reader.close();
                 }
+                if(isKilled) return;
                 JSONObject root = new JSONObject(JSON);
                 String status = root.get("status").toString();
                 if(status.compareTo("ok")!=0) throw new JSONException("BAD_ANSWER_FROM_SERVER");
-                JSONArray values = (JSONArray) root.get("rows");
-                Data.auds.clear();
+                JSONArray values = (JSONArray) root.get("data");
+                if(isKilled) return;
+                kernel.data.filler.clear();
+                Calendar cd = Calendar.getInstance();
                 for(int q=0; q<values.length(); q++) {
-                    Data.auds.add(values.get(q).toString());
+                    if(isKilled) break;
+                    JSONObject joba = values.getJSONObject(q);
+                    String title = joba.getString("title");
+                    String start = joba.getString("start");
+                    String end = joba.getString("end");
+                    cd.setTime(kernel.time.sdf.parse(start.substring(0, start.length()-5)));
+                    cd.add(Calendar.HOUR_OF_DAY, kernel.time.HOURS_STEP);
+                    DataFill df = new DataFill();
+                    df.CONTEXT = title;
+                    df.YEAR = cd.get(Calendar.YEAR);
+                    df.MONTH = cd.get(Calendar.MONTH);
+                    df.DAY = cd.get(Calendar.DAY_OF_MONTH);
+                    df.START_HOUR = cd.get(Calendar.HOUR_OF_DAY);
+                    df.START_MINS = cd.get(Calendar.MINUTE);
+                    cd.setTime(kernel.time.sdf.parse(end.substring(0, end.length()-5)));
+                    cd.add(Calendar.HOUR_OF_DAY, kernel.time.HOURS_STEP);
+                    df.END_HOUR = cd.get(Calendar.HOUR_OF_DAY);
+                    df.END_MINS = cd.get(Calendar.MINUTE);
+                    String TIME_ID = ""+df.YEAR;
+                    if(df.MONTH<10) TIME_ID = TIME_ID+"0";
+                    TIME_ID = TIME_ID+df.MONTH;
+
+                    if(df.DAY<10) TIME_ID = TIME_ID+"0";
+                    TIME_ID = TIME_ID+df.DAY;
+
+                    df.TIME_ID = Integer.valueOf(TIME_ID);
+                    kernel.data.insertDataFill(df);
                 }
             }
 
             @Override
             public void postWorkMainUI() {
                 super.postWorkMainUI();
-                gpd.checkReady(2);//gpd.updateRooms();
-                //lload.setVisibility(View.GONE);
-               // scrollz.setVisibility(View.VISIBLE);
-                //gpd.updateGroups();
+                if(isKilled) return;
+                buildRaspiByRange();
             }
-
             @Override
             public void preWorkMainUI() {
                 super.preWorkMainUI();
-               // scrollz.setVisibility(View.GONE);
-               // lload.setVisibility(View.VISIBLE);
-               // loadpb.setVisibility(View.VISIBLE);
-               // loadtv.setText("Загружаем данные...");
+                scrollz.setVisibility(View.GONE);
+                content.removeAllViews();
+                lload.setVisibility(View.VISIBLE);
+                loadpb.setVisibility(View.VISIBLE);
+                loadtv.setText("Получение расписания...");
             }
         };
-        load_prepod = new RuntimeEvent() {
+        return re;
+    }
+    public RuntimeEvent newPrepodsListLoader() {
+        RuntimeEvent re = new RuntimeEvent() {
             @Override
             public void asyncWork() throws Exception {
                 super.asyncWork();
@@ -255,6 +241,7 @@ public class MainActivity extends Activity {
                 StringBuffer buffer = new StringBuffer();
                 String line = "";
                 while ((line = reader.readLine()) != null) {
+                    if(isKilled) break;
                     buffer.append(line+"\n");
                 }
                 JSON = buffer.toString();
@@ -264,50 +251,38 @@ public class MainActivity extends Activity {
                 if (reader != null) {
                     reader.close();
                 }
+                if(isKilled) return;
                 JSONObject root = new JSONObject(JSON);
                 String status = root.get("status").toString();
                 if(status.compareTo("ok")!=0) throw new JSONException("BAD_ANSWER_FROM_SERVER");
                 JSONArray values = (JSONArray) root.get("rows");
-                Data.prepods.clear();
+                if(isKilled) return;
+                kernel.prepods.clear();
                 for(int q=0; q<values.length(); q++) {
-                    Data.prepods.add(values.get(q).toString());
+                    kernel.prepods.add(values.get(q).toString());
                 }
             }
-
             @Override
             public void postWorkMainUI() {
                 super.postWorkMainUI();
                 gpd.checkReady(1);
-                //gpd.updatePrepods();
-                //lload.setVisibility(View.GONE);
-                // scrollz.setVisibility(View.VISIBLE);
-                //gpd.updateGroups();
             }
-
             @Override
             public void preWorkMainUI() {
                 super.preWorkMainUI();
-                // scrollz.setVisibility(View.GONE);
-                // lload.setVisibility(View.VISIBLE);
-                // loadpb.setVisibility(View.VISIBLE);
-                // loadtv.setText("Загружаем данные...");
             }
         };
-        levent_group = new RuntimeEvent() {
+        return re;
+    }
+    public RuntimeEvent newAudsListLoader() {
+        RuntimeEvent re = new RuntimeEvent() {
             @Override
             public void asyncWork() throws Exception {
                 super.asyncWork();
                 String JSON="";
                 HttpsURLConnection connection = null;
                 BufferedReader reader = null;
-
-                String mode = "group";
-                switch(Data.ACTIVED_TAB){
-                    case 0: mode = "group"; break;
-                    case 1: mode = "teacher"; break;
-                    case 2: mode = "room"; break;
-                }
-                URL url = new URL("https://raspi.ulspu.ru/json/dashboard/events?mode="+mode+"&value="+Data.SAVED_GROUP);
+                URL url = new URL("https://raspi.ulspu.ru/json/dashboard/rooms");
                 connection = (HttpsURLConnection) url.openConnection();
                 connection.connect();
                 InputStream stream = connection.getInputStream();
@@ -315,6 +290,7 @@ public class MainActivity extends Activity {
                 StringBuffer buffer = new StringBuffer();
                 String line = "";
                 while ((line = reader.readLine()) != null) {
+                    if(isKilled) break;
                     buffer.append(line+"\n");
                 }
                 JSON = buffer.toString();
@@ -324,65 +300,33 @@ public class MainActivity extends Activity {
                 if (reader != null) {
                     reader.close();
                 }
+                if(isKilled) return;
                 JSONObject root = new JSONObject(JSON);
                 String status = root.get("status").toString();
                 if(status.compareTo("ok")!=0) throw new JSONException("BAD_ANSWER_FROM_SERVER");
-                JSONArray values = (JSONArray) root.get("data");
-                Data.filler.clear();
-                Calendar cd = Calendar.getInstance();
+                JSONArray values = (JSONArray) root.get("rows");
+                if(isKilled) return;
+                kernel.auds.clear();
                 for(int q=0; q<values.length(); q++) {
-                    JSONObject joba = values.getJSONObject(q);
-                    String title = joba.getString("title");
-                    String start = joba.getString("start");
-                    String end = joba.getString("end");
-                    cd.setTime(TimeUtils.sdf.parse(start.substring(0, start.length()-5)));
-                    cd.add(Calendar.HOUR_OF_DAY, TimeUtils.HOURS_STEP);
-                    DataFill df = new DataFill();
-                    df.CONTEXT = title;
-                    df.YEAR = cd.get(Calendar.YEAR);
-                    df.MONTH = cd.get(Calendar.MONTH);
-                    df.DAY = cd.get(Calendar.DAY_OF_MONTH);
-                    df.START_HOUR = cd.get(Calendar.HOUR_OF_DAY);
-                    df.START_MINS = cd.get(Calendar.MINUTE);
-                    cd.setTime(TimeUtils.sdf.parse(end.substring(0, end.length()-5)));
-                    cd.add(Calendar.HOUR_OF_DAY, TimeUtils.HOURS_STEP);
-                    df.END_HOUR = cd.get(Calendar.HOUR_OF_DAY);
-                    df.END_MINS = cd.get(Calendar.MINUTE);
-                    String TIME_ID = ""+df.YEAR;
-                    if(df.MONTH<10) TIME_ID = TIME_ID+"0";
-                    TIME_ID = TIME_ID+df.MONTH;
-
-                    if(df.DAY<10) TIME_ID = TIME_ID+"0";
-                    TIME_ID = TIME_ID+df.DAY;
-
-                    df.TIME_ID = Integer.valueOf(TIME_ID);
-                    Data.insertDataFill(df);
+                    kernel.auds.add(values.get(q).toString());
                 }
-                //Data.auds.clear();
-                //for(int q=0; q<values.length(); q++) {
-                    //Data.auds.add(values.get(q).toString());
-                //}
             }
 
             @Override
             public void postWorkMainUI() {
                 super.postWorkMainUI();
-                buildRaspiByRange();
-                //gpd.updateGroups();
+                gpd.checkReady(2);
             }
 
             @Override
             public void preWorkMainUI() {
                 super.preWorkMainUI();
-                scrollz.setVisibility(View.GONE);
-                content.removeAllViews();
-                lload.setVisibility(View.VISIBLE);
-                loadpb.setVisibility(View.VISIBLE);
-                loadtv.setText("Получение расписания...");
             }
         };
-
-        load_groups = new RuntimeEvent() {
+        return re;
+    }
+    public RuntimeEvent newGroupsListLoader() {
+        RuntimeEvent re = new RuntimeEvent() {
             @Override
             public void asyncWork() throws Exception {
                 super.asyncWork();
@@ -397,6 +341,7 @@ public class MainActivity extends Activity {
                 StringBuffer buffer = new StringBuffer();
                 String line = "";
                 while ((line = reader.readLine()) != null) {
+                    if(isKilled) break;
                     buffer.append(line+"\n");
                 }
                 JSON = buffer.toString();
@@ -406,46 +351,43 @@ public class MainActivity extends Activity {
                 if (reader != null) {
                     reader.close();
                 }
+                if(isKilled) return;
                 JSONObject root = new JSONObject(JSON);
                 String status = root.get("status").toString();
                 if(status.compareTo("ok")!=0) throw new JSONException("BAD_ANSWER_FROM_SERVER");
                 JSONArray values = (JSONArray) root.get("rows");
-                Data.groups.clear();
+                if(isKilled) return;
+                kernel.groups.clear();
                 for(int q=0; q<values.length(); q++) {
-                    Data.groups.add(values.get(q).toString());
+                    kernel.groups.add(values.get(q).toString());
                 }
             }
-
             @Override
             public void postWorkMainUI() {
                 super.postWorkMainUI();
                 gpd.checkReady(0);
-                //gpd.updateGroups();
-               // lload.setVisibility(View.GONE);
-               // scrollz.setVisibility(View.VISIBLE);
             }
-
             @Override
             public void preWorkMainUI() {
                 super.preWorkMainUI();
-              //  scrollz.setVisibility(View.GONE);
-               // lload.setVisibility(View.VISIBLE);
-              //  loadpb.setVisibility(View.VISIBLE);
-              //  loadtv.setText("Загружаем данные...");
             }
         };
+        return re;
     }
+
+
     public void loadGroupsList() {
-        Async.startAsync(load_groups, "grouplist");
+        kernel.async.startAsync(newGroupsListLoader(), "grouplist");
     }
     public void loadAudsList() {
-        Async.startAsync(load_aud, "audz");
+        kernel.async.startAsync(newAudsListLoader(), "audz");
     }
     public void loadPrepodsList() {
-        Async.startAsync(load_prepod, "prepodz");
+        kernel.async.startAsync(newPrepodsListLoader(), "prepodz");
     }
-    public void buildRaspiByGroups() {
-        if(Data.SAVED_GROUP.compareTo("nullable")==0) {
+
+    public void buildRaspiByParams() {
+        if(kernel.SAVED_PARAM.compareTo("nullable")==0) {
             scrollz.setVisibility(View.GONE);
             lload.setVisibility(View.VISIBLE);
             loadpb.setVisibility(View.GONE);
@@ -454,9 +396,9 @@ public class MainActivity extends Activity {
         }else {
             group.setEnabled(false);
             update.setEnabled(false);
-            group.setText(Data.SAVED_GROUP);
-            System.out.println("Trying BOOT "+Data.SAVED_GROUP);
-            Async.startAsync(levent_group, "grouper");
+            group.setText(kernel.SAVED_PARAM);
+            System.out.println("Trying BOOT "+kernel.SAVED_PARAM);
+            kernel.async.startAsync(newDataByParamLoader(), "grouper");
         }
     }
     public void buildRaspiByRange() {
@@ -464,8 +406,8 @@ public class MainActivity extends Activity {
         content.removeAllViews();
         group.setEnabled(true);
         update.setEnabled(true);
-        DateRange dr = TimeUtils.drangers.get(TimeUtils.SAVED_WEEK);
-        ArrayList<Lesson> lessa = Data.getLessonsByPeriod(dr);
+        DateRange dr = kernel.time.drangers.get(kernel.SAVED_WEEK);
+        ArrayList<Lesson> lessa = kernel.data.getLessonsByPeriod(dr);
         if(lessa.size()>0) {
             //content filling
             for(int q=0; q<lessa.size(); q++)

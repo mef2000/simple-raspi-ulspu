@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="big_font_size">25sp</dimen>
-    <dimen name="standart_font_size">12sp</dimen>
-    <dimen name="item_font_size">18sp</dimen>
-    <dimen name="item_list_size">42dp</dimen>
-    <dimen name="item_week_size">21dp</dimen>
-</resources>

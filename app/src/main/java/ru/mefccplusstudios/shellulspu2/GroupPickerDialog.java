@@ -15,11 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-
-import arch.main.Data;
+import arch.main.Kernel;
 
 public class GroupPickerDialog extends Dialog {
     private final MainActivity context;
+    private final Kernel kernel;
     private final ArrayAdapter<String> aa;
     private final EditText search;
     private final ListView lv;
@@ -29,6 +29,7 @@ public class GroupPickerDialog extends Dialog {
     public GroupPickerDialog(MainActivity context) {
         super(context);
         this.context = context;
+        this.kernel = context.kernel;
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.group_picker);
         this.setCancelable(true);
@@ -52,29 +53,29 @@ public class GroupPickerDialog extends Dialog {
                 String word = search.getText().toString();
                 if(word.compareTo("dev:on")==0) {
                     Toast.makeText(context, "Режим отладки включен", Toast.LENGTH_LONG).show();
-                    Data.isDebugMode = true;
+                    kernel.isDebugMode = true;
                 } else if(word.compareTo("dev:off")==0) {
                     Toast.makeText(context, "Режим отладки выключен", Toast.LENGTH_LONG).show();
-                    Data.isDebugMode = false;
+                    kernel.isDebugMode = false;
                 }
                 aa.clear();
-                switch(Data.PACTIVED_TAB) {
+                switch(kernel.ACTIVED_TAB) {
                     case 0:
-                        aa.addAll(Data.groups);
-                        for(String s: Data.groups) {
-                            if(!s.startsWith(search.getText().toString())) aa.remove(s);
+                        aa.addAll(kernel.groups);
+                        for(String s: kernel.groups) {
+                            if(!s.toUpperCase().contains(search.getText().toString().toUpperCase())) aa.remove(s);
                         }
                         break;
                     case 1:
-                        aa.addAll(Data.prepods);
-                        for(String s: Data.prepods) {
-                            if(!s.contains(search.getText().toString())) aa.remove(s);
+                        aa.addAll(kernel.prepods);
+                        for(String s: kernel.prepods) {
+                            if(!s.toUpperCase().contains(search.getText().toString().toUpperCase())) aa.remove(s);
                         }
                         break;
                     case 2:
-                        aa.addAll(Data.auds);
-                        for(String s: Data.auds) {
-                            if(!s.startsWith(search.getText().toString())) aa.remove(s);
+                        aa.addAll(kernel.auds);
+                        for(String s: kernel.auds) {
+                            if(!s.toUpperCase().contains(search.getText().toString().toUpperCase())) aa.remove(s);
                         }
                         break;
                 }
@@ -86,48 +87,48 @@ public class GroupPickerDialog extends Dialog {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 GroupPickerDialog.this.dismiss();
-                Data.SAVED_GROUP = aa.getItem(position);
-                Data.ACTIVED_TAB = Data.PACTIVED_TAB;
-                context.buildRaspiByGroups();
+                kernel.SAVED_PARAM = aa.getItem(position);
+                kernel.FOCUS_TAB = kernel.ACTIVED_TAB;
+                context.buildRaspiByParams();
             }
         });
         tabs[0].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Data.PACTIVED_TAB = 0;
+                kernel.ACTIVED_TAB = 0;
                 updateState();
-                checkReady(0);
+                //checkReady(0);
             }
         });
         tabs[1].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Data.PACTIVED_TAB = 1;
+                kernel.ACTIVED_TAB = 1;
                 updateState();
-                checkReady(1);
+                //checkReady(1);
             }
         });
         tabs[2].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Data.PACTIVED_TAB = 2;
+                kernel.ACTIVED_TAB = 2;
                 updateState();
-                checkReady(2);
+                //checkReady(2);
             }
         });
     }
     @Override public void show() {
-        if(Data.groups.size()<1) {
+        if(kernel.groups.size()<1) {
             tabs[0].setEnabled(false);
             context.loadGroupsList();
             tvstat.setText("Загрузка данных...");
         }
-        if(Data.auds.size()<1) {
+        if(kernel.auds.size()<1) {
             tabs[2].setEnabled(false);
             context.loadAudsList();
             tvstat.setText("Загрузка данных...");
         }
-        if(Data.prepods.size()<1) {
+        if(kernel.prepods.size()<1) {
             tabs[1].setEnabled(false);
             context.loadPrepodsList();
             tvstat.setText("Загрузка данных...");
@@ -136,9 +137,9 @@ public class GroupPickerDialog extends Dialog {
     }
     public void checkReady(int from) {
         tabs[from].setEnabled(true);
-        if(from==Data.PACTIVED_TAB) {
+        if(from==kernel.ACTIVED_TAB) {
             System.out.println("SUCESS FROM: "+from);
-            switch(Data.PACTIVED_TAB) {
+            switch(kernel.ACTIVED_TAB) {
                 case 0: updateGroups(); break;
                 case 1: updatePrepods(); break;
                 case 2: updateRooms(); break;
@@ -147,25 +148,25 @@ public class GroupPickerDialog extends Dialog {
     }
     public void updateGroups() {
         aa.clear();
-        aa.addAll(Data.groups);
+        aa.addAll(kernel.groups);
         aa.notifyDataSetChanged();
         tvstat.setText("Выберите группу:");
     }
     public void updateRooms() {
         aa.clear();
-        aa.addAll(Data.auds);
+        aa.addAll(kernel.auds);
         aa.notifyDataSetChanged();
         tvstat.setText("Выберите аудиторию:");
     }
     public void updatePrepods() {
         aa.clear();
-        aa.addAll(Data.prepods);
+        aa.addAll(kernel.prepods);
         aa.notifyDataSetChanged();
         tvstat.setText("Выберите преподавателя:");
     }
     public void updateState() {
         for(int q=0; q<3; q++) {
-            if(q!=Data.PACTIVED_TAB) {
+            if(q!=kernel.ACTIVED_TAB) {
                 tabs[q].setTextColor(context.getResources().getColor(R.color.std_main));
                 tabs[q].setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
             }else {
@@ -173,5 +174,6 @@ public class GroupPickerDialog extends Dialog {
                 tabs[q].setBackgroundColor(context.getResources().getColor(R.color.std_main));
             }
         }
+        checkReady(kernel.ACTIVED_TAB);
     }
 }
