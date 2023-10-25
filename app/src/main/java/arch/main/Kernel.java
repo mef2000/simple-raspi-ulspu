@@ -1,6 +1,9 @@
 package arch.main;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Handler;
 import android.os.Message;
 
@@ -15,11 +18,15 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import ru.mefccplusstudios.shellulspu2.DateRange;
+import ru.mefccplusstudios.shellulspu2.MainActivity;
+import ru.mefccplusstudios.shellulspu2.R;
 
 public class Kernel {
     protected final Kernel kernel = this;
+    protected MainActivity context;
     public String SAVED_PARAM = "nullable";
     public String ERROR_MSG;
+
     public int SAVED_YEAR, SAVED_MONTH, SAVED_WEEK,
             FOCUS_TAB, ACTIVED_TAB, FOCUS_YEAR, FOCUS_MONTH;
     public boolean isDebugMode = false;
@@ -35,6 +42,10 @@ public class Kernel {
     public ArrayList<String> prepods = new ArrayList<>();
 
     private final int HOURS_STEP = 4;
+    public void init(MainActivity context) {
+        this.context = context;
+        settings = context.getSharedPreferences("kon_games_global", MODE_PRIVATE);
+    }
     public void loadSettings() {
         this.isDebugMode = settings.getBoolean("debug_mode", false);
         this.SAVED_PARAM = settings.getString("group", "nullable");
@@ -42,7 +53,10 @@ public class Kernel {
         this.SAVED_MONTH= settings.getInt("smonth", kernel.time.TOTAL_MONTH);
         this.SAVED_WEEK= settings.getInt("sweek", 0);
         this.FOCUS_TAB = settings.getInt("atab", 0);
+        this.style.THEME_PARADIGM = 2;//settings.getInt("theme", 1);
+        this.style.FONT_SIZE_SP = 18;//settings.getInt("fsize", 20);
         this.ACTIVED_TAB = FOCUS_TAB;
+        this.style.loadStyle(this.style.THEME_PARADIGM);
     }
     public void saveSettings() {
         SharedPreferences.Editor setedit = settings.edit();
@@ -52,11 +66,15 @@ public class Kernel {
         setedit.putInt("atab", this.FOCUS_TAB);
         setedit.putBoolean("debug_mode", this.isDebugMode);
         setedit.putString("group", this.SAVED_PARAM);
+        setedit.putInt("theme", this.style.THEME_PARADIGM);
+        setedit.putInt("fsize", this.style.FONT_SIZE_SP);
         setedit.commit();
     }
     public Time time = new Time();
     public AsyncJob async = new AsyncJob();
     public Data data = new Data();
+    public Style style = new Style();
+
     public class Time {
         private Calendar dyncd = Calendar.getInstance();
         public final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -148,8 +166,8 @@ public class Kernel {
                 dr.END_DAY = dyncd.get(Calendar.DAY_OF_MONTH);
                 dr.END_MONTH = dyncd.get(Calendar.MONTH);
                 dr.END_YEAR = dyncd.get(Calendar.YEAR);
-                drangers.add(dr);
                 dyncd.add(Calendar.DATE, 1);
+                drangers.add(dr);
                 if(dr.END_MONTH!=PREVIOSLY_MONTH) break;
                 PREVIOSLY_MONTH = dr.END_MONTH;
             }
@@ -237,6 +255,49 @@ public class Kernel {
             Map<Integer, Lesson> submap = filler.subMap(START_ID, END_ID+1);
             tlessons.addAll(submap.values());
             return tlessons;
+        }
+    }
+    public class Style {
+        public int THEME_PARADIGM;
+        public int BACKGROUND_COLOR;
+        public int DIALOG_COLOR;
+        public int DIALOG_HEADER_COLOR;
+        public int FIELD_COLOR;
+        public int MAIN_FONT_COLOR;
+        public int DISABLED_FONT_COLOR;
+        public int FOREGROUND_FONT_COLOR;
+        public int FONT_SIZE_SP;
+
+        public void loadStyle(int stl) {
+            switch(stl) {
+                case 0:
+                    BACKGROUND_COLOR = context.getResources().getColor(R.color.white);
+                    FIELD_COLOR = context.getResources().getColor(R.color.orange);
+                    FOREGROUND_FONT_COLOR = context.getResources().getColor(R.color.white);
+                    MAIN_FONT_COLOR = context.getResources().getColor(R.color.black);
+                    DISABLED_FONT_COLOR = context.getResources().getColor(R.color.grey_dedark);
+                    DIALOG_COLOR = context.getResources().getColor(R.color.white);
+                    DIALOG_HEADER_COLOR = context.getResources().getColor(R.color.orange);
+                    break;
+                case 2:
+                    BACKGROUND_COLOR = context.getResources().getColor(R.color.white);
+                    FIELD_COLOR = context.getResources().getColor(R.color.phiol);
+                    FOREGROUND_FONT_COLOR = context.getResources().getColor(R.color.white);
+                    MAIN_FONT_COLOR = context.getResources().getColor(R.color.black);
+                    DISABLED_FONT_COLOR = context.getResources().getColor(R.color.grey_dedark);
+                    DIALOG_COLOR = context.getResources().getColor(R.color.white);
+                    DIALOG_HEADER_COLOR = context.getResources().getColor(R.color.phiol);
+                    break;
+                case 1:
+                    BACKGROUND_COLOR = context.getResources().getColor(R.color.grey);
+                    FIELD_COLOR = context.getResources().getColor(R.color.grey_light);
+                    FOREGROUND_FONT_COLOR = context.getResources().getColor(R.color.white);
+                    MAIN_FONT_COLOR = context.getResources().getColor(R.color.white);
+                    DISABLED_FONT_COLOR = context.getResources().getColor(R.color.grey_ultra);
+                    DIALOG_COLOR = context.getResources().getColor(R.color.grey_light);
+                    DIALOG_HEADER_COLOR = context.getResources().getColor(R.color.white);
+                    break;
+            }
         }
     }
 }

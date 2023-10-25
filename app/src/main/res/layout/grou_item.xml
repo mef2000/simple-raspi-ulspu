@@ -4,11 +4,10 @@
     android:orientation="vertical"
     android:gravity="center_vertical"
     android:background="?android:selectableItemBackground"
-    android:layout_height="@dimen/item_list_size">
+    android:layout_margin="5dp"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
     <TextView
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/std_main"
-        android:textSize="@dimen/item_font_size"
         android:text="NOT_INIT"
         android:id="@+id/lwGroup"
         android:layout_width="wrap_content"

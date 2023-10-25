@@ -3,16 +3,23 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/projects/shellulspu2/app/src/main/res/drawable/all_corners.xml" value="0.2065" />
+        <entry key="..\:/projects/shellulspu2/app/src/main/res/drawable/boundary.xml" value="0.2435" />
         <entry key="..\:/projects/shellulspu2/app/src/main/res/drawable/down_background.xml" value="0.2115" />
         <entry key="..\:/projects/shellulspu2/app/src/main/res/drawable/ic_arrow_drop_down_24.xml" value="0.2115" />
         <entry key="..\:/projects/shellulspu2/app/src/main/res/drawable/ic_baseline_refresh_24.xml" value="0.2115" />
+        <entry key="..\:/projects/shellulspu2/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.207" />
+        <entry key="..\:/projects/shellulspu2/app/src/main/res/drawable/ic_close.xml" value="0.2435" />
         <entry key="..\:/projects/shellulspu2/app/src/main/res/drawable/ic_main_300.xml" value="0.1" />
-        <entry key="..\:/projects/shellulspu2/app/src/main/res/layout/data_picker.xml" value="0.5712121212121212" />
+        <entry key="..\:/projects/shellulspu2/app/src/main/res/drawable/up_background.xml" value="0.2065" />
+        <entry key="..\:/projects/shellulspu2/app/src/main/res/layout/core_dialog.xml" value="1.0549242424242424" />
+        <entry key="..\:/projects/shellulspu2/app/src/main/res/layout/data_picker.xml" value="0.566358024691358" />
         <entry key="..\:/projects/shellulspu2/app/src/main/res/layout/error_layout.xml" value="0.6470588235294118" />
         <entry key="..\:/projects/shellulspu2/app/src/main/res/layout/grou_item.xml" value="0.8409090909090909" />
         <entry key="..\:/projects/shellulspu2/app/src/main/res/layout/group_picker.xml" value="0.8409090909090909" />
         <entry key="..\:/projects/shellulspu2/app/src/main/res/layout/list_week.xml" value="0.8409090909090909" />
         <entry key="..\:/projects/shellulspu2/app/src/main/res/layout/main_layout.xml" value="0.5712121212121212" />
+        <entry key="..\:/projects/shellulspu2/app/src/main/res/layout/settings_layout.xml" value="1.375" />
         <entry key="..\:/projects/shellulspu2/app/src/main/res/layout/stroken_layout.xml" value="0.7647058823529411" />
       </map>
     </option>

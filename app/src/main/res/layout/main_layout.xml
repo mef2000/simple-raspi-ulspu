@@ -1,92 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/background"
+    android:id="@+id/rootp"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <RelativeLayout
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:background="@drawable/up_background"
-            android:layout_alignParentTop="true"
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:id="@+id/rootrela"
+        android:background="@drawable/up_background">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="75dp">
+            android:layout_height="wrap_content">
             <LinearLayout
-                android:layout_centerInParent="true"
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:orientation="horizontal"
-                android:layout_height="64dp">
-                <Button
-                    android:background="?android:selectableItemBackground"
-                    android:drawableRight="@drawable/ic_arrow_drop_down_24"
-                    android:text="ГРУППА"
-                    android:id="@+id/BtnGroup"
+                android:layout_height="wrap_content">
+                <TextClock
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="0dp"
+                    android:textSize="@dimen/big_font_size"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/standart_font_size"
-                    android:gravity="center_vertical"
+                    android:id="@+id/clock_id"
+                    android:text="TIME"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:includeFontPadding="false"
+                        android:lineSpacingExtra="0dp"
+                        android:id="@+id/weekTV"
+                        android:textSize="@dimen/standart_font_size"
+                        android:text="dayweek"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:includeFontPadding="false"
+                        android:lineSpacingExtra="0dp"
+                        android:id="@+id/dayTV"
+                        android:textSize="@dimen/standart_font_size"
+                        android:text="daydate"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
+            <ImageButton
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="?android:selectableItemBackground"
+                android:id="@+id/Settings"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="43dp"
+                android:src="@drawable/ic_baseline_settings_24" />
+            <ImageButton
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="?android:selectableItemBackground"
+                android:id="@+id/UPDATE"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_baseline_refresh_24" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_height="64dp">
+            <Button
+                android:background="?android:selectableItemBackground"
+                android:drawableRight="@drawable/ic_arrow_drop_down_24"
+                android:text="ГРУППА"
+                android:id="@+id/BtnGroup"
+                android:textColor="@color/white"
+                android:textSize="@dimen/standart_font_size"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+            <Space
+                android:layout_width="32px"
+                android:layout_height="match_parent"/>
+            <LinearLayout
+                android:gravity="center"
+                android:clickable="true"
+                android:background="?android:selectableItemBackground"
+                android:orientation="horizontal"
+                android:id="@+id/beginDataPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/numberWeek"
+                    android:textSize="@dimen/big_font_size"
+                    android:text="Н"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="0dp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:layout_marginLeft="1dp"
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/weekPeriodTV"
+                        android:textSize="@dimen/standart_font_size"
+                        android:text="00/00"
+                        android:includeFontPadding="false"
+                        android:lineSpacingExtra="0dp"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:includeFontPadding="false"
+                        android:lineSpacingExtra="0dp"
+                        android:id="@+id/monthTV"
+                        android:text="еделя"
+                        android:textSize="@dimen/standart_font_size"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_arrow_drop_down_24"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"/>
-                <Space
-                    android:layout_width="32px"
-                    android:layout_height="match_parent"/>
-<LinearLayout
-    android:gravity="center"
-    android:clickable="true"
-    android:background="?android:selectableItemBackground"
-    android:orientation="horizontal"
-    android:id="@+id/beginDataPicker"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent">
-<TextView
-    android:id="@+id/numberWeek"
-    android:textSize="@dimen/big_font_size"
-    android:text="Н"
-    android:includeFontPadding="false"
-    android:lineSpacingExtra="0dp"
-    android:textColor="@color/white"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
-    <LinearLayout
-        android:layout_marginLeft="1dp"
-        android:layout_width="wrap_content"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/weekPeriodTV"
-            android:textSize="@dimen/standart_font_size"
-            android:text="00/00"
-            android:includeFontPadding="false"
-            android:lineSpacingExtra="0dp"
-            android:textColor="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:includeFontPadding="false"
-            android:lineSpacingExtra="0dp"
-            android:id="@+id/monthTV"
-            android:text="еделя"
-            android:textSize="@dimen/standart_font_size"
-            android:textColor="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-    <ImageView
-        android:layout_centerVertical="true"
-        android:src="@drawable/ic_arrow_drop_down_24"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"/>
-</LinearLayout>
             </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
-        </RelativeLayout>
 
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ScrollView
         android:scrollbars="vertical"
-        android:layout_marginBottom="86dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -102,7 +166,6 @@
     <LinearLayout
         android:gravity="center"
         android:id="@+id/llLoad"
-        android:layout_marginBottom="86dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -125,62 +188,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
-<RelativeLayout
-    android:layout_alignParentBottom = "true"
-    android:layout_width="match_parent"
-    android:layout_height="85dp"
-    android:background="@drawable/down_background"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp">
-    <LinearLayout
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:orientation="horizontal"
-        android:layout_height="match_parent">
-        <TextClock
-            android:includeFontPadding="false"
-            android:lineSpacingExtra="0dp"
-            android:textSize="@dimen/big_font_size"
-            android:textColor="@color/white"
-            android:id="@+id/clock_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <LinearLayout
-            android:layout_marginLeft="5dp"
-            android:layout_width="wrap_content"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
-            <TextView
-                android:includeFontPadding="false"
-                android:lineSpacingExtra="0dp"
-                android:id="@+id/weekTV"
-                android:textSize="@dimen/standart_font_size"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:includeFontPadding="false"
-                android:lineSpacingExtra="0dp"
-                android:id="@+id/dayTV"
-                android:textSize="@dimen/standart_font_size"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <ImageButton
-        android:layout_marginRight="5dp"
-        android:background="?android:selectableItemBackground"
-        android:id="@+id/UPDATE"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/ic_baseline_refresh_24" />
 </RelativeLayout>
-</RelativeLayout>
-
-
 </LinearLayout>

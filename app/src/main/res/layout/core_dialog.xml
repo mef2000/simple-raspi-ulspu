@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/rootll"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_centerInParent="true"
+            android:id="@+id/dialogTitle"
+            android:textSize="@dimen/standart_font_size"
+            android:text="Dialog Title"
+            android:textColor="@color/std_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:layout_alignParentRight="true"
+            android:id="@+id/dialogClose"
+            android:drawableTop="@drawable/ic_close"
+            android:drawableTint="@color/grey_ultra"
+            android:background="?android:selectableItemBackground"
+            android:layout_width="50dp"
+            android:layout_height="40dp"/>
+    </RelativeLayout>
+    <View
+        android:layout_marginLeft="5px"
+        android:layout_marginRight="5px"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:id="@+id/separator"
+        android:layout_marginBottom="5px"
+        android:background="@color/std_main"/>
+    <LinearLayout
+        android:id="@+id/dialogContent"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></LinearLayout>
+
+</LinearLayout>

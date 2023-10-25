@@ -1,12 +1,15 @@
 package ru.mefccplusstudios.shellulspu2;
 
 import android.app.Activity;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
 import android.widget.ScrollView;
 import android.widget.TextClock;
 import android.widget.TextView;
@@ -31,14 +34,14 @@ import arch.views.DayBoard;
 
 public class MainActivity extends Activity {
     public final Kernel kernel = new Kernel();
-
     private TextClock tc;
-    private ImageButton update;
+    private ImageButton update, settings;
     private TextView daytv, weektv, nweek, monthtv, weekperiod;
 
     private ErrorDialog errdial;
-    private WeekPickerDialog wpd;
+    private WeekDialog wpd;
     private GroupPickerDialog gpd;
+    private SettingsDialog set;
     private LinearLayout weekp;
 
     private Button group;
@@ -47,16 +50,16 @@ public class MainActivity extends Activity {
     private ScrollView scrollz;
     private ProgressBar loadpb;
     private TextView loadtv;
-    private LinearLayout lload, content;
+    private LinearLayout lload, content, rootp, rootl;
 
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        kernel.settings = getSharedPreferences("kon_games_global", MODE_PRIVATE);
-        wpd = new WeekPickerDialog(this);
+        kernel.init(this);
+        wpd = new WeekDialog(this);
         gpd = new GroupPickerDialog(this);
         errdial = new ErrorDialog(this);
-
+        set = new SettingsDialog(this);
         setContentView(R.layout.main_layout);
         scrollz = findViewById(R.id.ScrollZ);
         lload = findViewById(R.id.llLoad);
@@ -72,6 +75,9 @@ public class MainActivity extends Activity {
         weekperiod = findViewById(R.id.weekPeriodTV);
         group = findViewById(R.id.BtnGroup);
         content = findViewById(R.id.Parceable);
+        rootp = findViewById(R.id.rootp);
+        rootl = findViewById(R.id.rootrela);
+        settings = findViewById(R.id.Settings);
         weekp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,6 +96,12 @@ public class MainActivity extends Activity {
                 buildRaspiByParams();
             }
         });
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                set.show();
+            }
+        });
 
         rerror = new RuntimeEvent() {
             @Override
@@ -104,13 +116,35 @@ public class MainActivity extends Activity {
                 if(kernel.isDebugMode) errdial.show();
             }
         };
+        set.show();
     }
+
+    public void styleHasBeenChanged() {
+        rootp.setBackgroundColor(kernel.style.BACKGROUND_COLOR);
+        rootl.getBackground().setColorFilter(kernel.style.FIELD_COLOR, PorterDuff.Mode.SRC_ATOP);
+        wpd.styleHasBeenChanged();
+        gpd.styleHasBeenChanged();
+        errdial.styleHasBeenChanged();
+        set.styleHasBeenChanged();
+        loadpb.getIndeterminateDrawable().setColorFilter(kernel.style.FIELD_COLOR, PorterDuff.Mode.SRC_ATOP);;
+        loadtv.setTextColor(kernel.style.DISABLED_FONT_COLOR);
+        loadtv.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
+        monthtv.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
+        weekperiod.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
+        nweek.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int)(2.5f*kernel.style.FONT_SIZE_SP));
+        group.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
+        tc.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int)(2.5f*kernel.style.FONT_SIZE_SP));
+        daytv.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
+        weektv.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
+    }
+
     @Override public void onStart() {
         super.onStart();
-        kernel.loadSettings();
         kernel.time.init();
-        kernel.time.pullDateRangers(kernel.SAVED_MONTH, kernel.SAVED_YEAR);
         kernel.async.init(rerror);
+        kernel.loadSettings();
+        styleHasBeenChanged();
+        kernel.time.pullDateRangers(kernel.SAVED_MONTH, kernel.SAVED_YEAR);
         gpd.updateState();
         buildRaspiByParams();
     }
@@ -121,7 +155,7 @@ public class MainActivity extends Activity {
         tc.setFormat24Hour("HH:mm");
         weektv.setText(kernel.time.getNamedDayOfWeekBy(kernel.time.TOTAL_YEAR, kernel.time.TOTAL_MONTH, kernel.time.TOTAL_DAY).toLowerCase());
         daytv.setText(kernel.time.getStyledData(
-                kernel.time.TOTAL_YEAR, kernel.time.TOTAL_MONTH, kernel.time.TOTAL_DAY));
+                kernel.time.TOTAL_YEAR, kernel.time.TOTAL_MONTH+1, kernel.time.TOTAL_DAY));
         updateUI();
     }
     @Override public void onPause() {
@@ -145,7 +179,7 @@ public class MainActivity extends Activity {
                 BufferedReader reader = null;
 
                 String mode = "group";
-                switch(kernel.ACTIVED_TAB){
+                switch(kernel.FOCUS_TAB){
                     case 0: mode = "group"; break;
                     case 1: mode = "teacher"; break;
                     case 2: mode = "room"; break;

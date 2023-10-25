@@ -9,28 +9,38 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import arch.main.Kernel;
 import ru.mefccplusstudios.shellulspu2.MainActivity;
 import ru.mefccplusstudios.shellulspu2.R;
 
 public class Stroken extends LinearLayout {
+    private final Kernel kernel;
     private final MainActivity context;
     private final LayoutInflater inflater;
     private final LinearLayout content;
     private final TextView tv;
+    private final View horv, vertv;
     public Stroken(MainActivity context, String time_range) {
         super(context);
         this.context = context;
+        this.kernel = context.kernel;
         inflater = LayoutInflater.from(context);
         View v = inflater.inflate(R.layout.stroken_layout, null);
         content = v.findViewById(R.id.conentLL);
         tv = v.findViewById(R.id.idTime);
+        horv = v.findViewById(R.id.horV);
+        vertv = v.findViewById(R.id.verV);
+        horv.setBackgroundColor(kernel.style.FIELD_COLOR);
+        vertv.setBackgroundColor(kernel.style.FIELD_COLOR);
         tv.setText(time_range);
+        tv.setTextColor(kernel.style.MAIN_FONT_COLOR);//getResources().getColor(R.color.black));
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
         this.addView(v);
     }
     public void add(String datacontent) {
         TextView tmp = new TextView(context);
-        tmp.setTextColor(getResources().getColor(R.color.black));
-        tmp.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        tmp.setTextColor(kernel.style.MAIN_FONT_COLOR);//getResources().getColor(R.color.black));
+        tmp.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
         tmp.setTypeface(Typeface.DEFAULT_BOLD);
         tmp.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         try{
@@ -38,8 +48,8 @@ public class Stroken extends LinearLayout {
             tmp.setText(datacontent.substring(0, datacontent.indexOf(" -")));
             content.addView(tmp);
             TextView another = new TextView(context);
-            another.setTextColor(getResources().getColor(R.color.black));
-            another.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            another.setTextColor(kernel.style.DISABLED_FONT_COLOR);//getResources().getColor(R.color.black));
+            another.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
             another.setText(datacontent.substring(datacontent.indexOf(" - "), datacontent.length()));
 
             LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);

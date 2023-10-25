@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="DuplicateDefinition">
     <color name="std_main">#E75427</color>
+    <color name="dark_std_main">#CA694B</color>
     <color name="background">#ffffff</color>
+    <color name="gray">#636262</color>
+    <color name="dark_gray">#666161</color>
     <color name="black">@android:color/black</color>
-    <color name="white" tools:ignore="DuplicateDefinition">#ffffff</color>
+    <color name="white" >#ffffff</color>
+
+
+
+    <color name="orange">#E75427</color>
+    <color name="phiol">#72399F</color>
+    <color name="grey">#121212</color>
+    <color name="grey_light">#212121</color>
+    <color name="grey_dedark">#424242</color>
+    <color name="grey_ultra">#6D6D6D</color>
 </resources>
