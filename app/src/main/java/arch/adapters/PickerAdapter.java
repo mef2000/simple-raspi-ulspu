@@ -17,7 +17,7 @@ public class PickerAdapter extends ArrayAdapter<String> {
     private final Kernel kernel;
 
     public PickerAdapter(MainActivity context) {
-        super(context, R.layout.list_week);
+        super(context, R.layout.grou_item);
         this.context = context;
         this.kernel = context.kernel;
     }

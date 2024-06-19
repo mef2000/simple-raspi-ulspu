@@ -53,8 +53,9 @@ public class Kernel {
         this.SAVED_MONTH= settings.getInt("smonth", kernel.time.TOTAL_MONTH);
         this.SAVED_WEEK= settings.getInt("sweek", 0);
         this.FOCUS_TAB = settings.getInt("atab", 0);
-        this.style.THEME_PARADIGM = 2;//settings.getInt("theme", 1);
-        this.style.FONT_SIZE_SP = 18;//settings.getInt("fsize", 20);
+        this.style.THEME_PARADIGM = settings.getInt("themer", 0);
+        this.style.loadStyle(this.style.THEME_PARADIGM);
+        this.style.FONT_SIZE_SP = settings.getInt("fsize", 20);
         this.ACTIVED_TAB = FOCUS_TAB;
         this.style.loadStyle(this.style.THEME_PARADIGM);
     }
@@ -66,7 +67,7 @@ public class Kernel {
         setedit.putInt("atab", this.FOCUS_TAB);
         setedit.putBoolean("debug_mode", this.isDebugMode);
         setedit.putString("group", this.SAVED_PARAM);
-        setedit.putInt("theme", this.style.THEME_PARADIGM);
+        setedit.putInt("themer", this.style.THEME_PARADIGM);
         setedit.putInt("fsize", this.style.FONT_SIZE_SP);
         setedit.commit();
     }
@@ -266,6 +267,7 @@ public class Kernel {
         public int MAIN_FONT_COLOR;
         public int DISABLED_FONT_COLOR;
         public int FOREGROUND_FONT_COLOR;
+        public int SEEKBAR_COLOR;
         public int FONT_SIZE_SP;
 
         public void loadStyle(int stl) {
@@ -273,13 +275,15 @@ public class Kernel {
                 case 0:
                     BACKGROUND_COLOR = context.getResources().getColor(R.color.white);
                     FIELD_COLOR = context.getResources().getColor(R.color.orange);
+                    SEEKBAR_COLOR = context.getResources().getColor(R.color.orange);
                     FOREGROUND_FONT_COLOR = context.getResources().getColor(R.color.white);
                     MAIN_FONT_COLOR = context.getResources().getColor(R.color.black);
                     DISABLED_FONT_COLOR = context.getResources().getColor(R.color.grey_dedark);
                     DIALOG_COLOR = context.getResources().getColor(R.color.white);
                     DIALOG_HEADER_COLOR = context.getResources().getColor(R.color.orange);
                     break;
-                case 2:
+                case 1:
+                    SEEKBAR_COLOR = context.getResources().getColor(R.color.phiol);
                     BACKGROUND_COLOR = context.getResources().getColor(R.color.white);
                     FIELD_COLOR = context.getResources().getColor(R.color.phiol);
                     FOREGROUND_FONT_COLOR = context.getResources().getColor(R.color.white);
@@ -288,7 +292,8 @@ public class Kernel {
                     DIALOG_COLOR = context.getResources().getColor(R.color.white);
                     DIALOG_HEADER_COLOR = context.getResources().getColor(R.color.phiol);
                     break;
-                case 1:
+                case 2:
+                    SEEKBAR_COLOR = context.getResources().getColor(R.color.grey_ultra);
                     BACKGROUND_COLOR = context.getResources().getColor(R.color.grey);
                     FIELD_COLOR = context.getResources().getColor(R.color.grey_light);
                     FOREGROUND_FONT_COLOR = context.getResources().getColor(R.color.white);

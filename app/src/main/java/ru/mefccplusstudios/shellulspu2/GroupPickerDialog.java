@@ -126,6 +126,7 @@ public class GroupPickerDialog extends DialogCore {
         for(int q=0; q<3; q++) {
             tabs[q].setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
         }
+        updateState();
     }
     @Override public void show() {
         if(kernel.groups.size()<1) {

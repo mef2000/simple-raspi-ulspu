@@ -1,19 +1,14 @@
 package ru.mefccplusstudios.shellulspu2;
 
-import android.graphics.PorterDuff;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TextView;
-
-import arch.adapters.WeekAdapter;
 import arch.views.DialogCore;
 
 public class WeekDialog extends DialogCore {
@@ -154,7 +149,7 @@ public class WeekDialog extends DialogCore {
             for(int q=0; q<7; q++) {
                 TextView tv = new TextView(this.context);
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
-                tv.setTextColor(getResources().getColor(R.color.std_main));
+                tv.setTextColor(getResources().getColor(R.color.orange));
                 tv.setWidth(0);
                 tv.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f));
                 tv.setGravity(Gravity.CENTER);

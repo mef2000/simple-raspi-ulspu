@@ -13,7 +13,7 @@
             android:id="@+id/dialogTitle"
             android:textSize="@dimen/standart_font_size"
             android:text="Dialog Title"
-            android:textColor="@color/std_main"
+            android:textColor="@color/orange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <Button
@@ -32,7 +32,7 @@
         android:layout_height="2dp"
         android:id="@+id/separator"
         android:layout_marginBottom="5px"
-        android:background="@color/std_main"/>
+        android:background="@color/orange"/>
     <LinearLayout
         android:id="@+id/dialogContent"
         android:orientation="vertical"

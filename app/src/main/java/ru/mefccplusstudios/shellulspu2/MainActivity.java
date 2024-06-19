@@ -99,6 +99,10 @@ public class MainActivity extends Activity {
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                scrollz.setVisibility(View.GONE);
+                lload.setVisibility(View.VISIBLE);
+                loadpb.setVisibility(View.GONE);
+                loadtv.setText("Чтобы изменения вступили в силу необходимо обновить расписание");
                 set.show();
             }
         });
@@ -116,7 +120,6 @@ public class MainActivity extends Activity {
                 if(kernel.isDebugMode) errdial.show();
             }
         };
-        set.show();
     }
 
     public void styleHasBeenChanged() {
@@ -136,6 +139,7 @@ public class MainActivity extends Activity {
         tc.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int)(2.5f*kernel.style.FONT_SIZE_SP));
         daytv.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
         weektv.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
+
     }
 
     @Override public void onStart() {
