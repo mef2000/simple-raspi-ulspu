@@ -1,9 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Расписание УлГПУ</string>
+    <string name="app_name">UlSPU Schedule</string>
     <string-array name="themes">
         <item>Современность</item>
         <item>Сохраняя традиции</item>
         <item>Темная тема</item>
     </string-array>
+    <string name="monday">Monday</string>
+    <string name="tueday">Tuesday</string>
+    <string name="weday">Wednesday</string>
+    <string name="thurday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="satday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="nov">November</string>
+    <string name="oct">October</string>
+    <string name="aug">August</string>
+    <string name="dec">December</string>
+    <string name="jun">June</string>
+    <string name="jul">July</string>
+    <string name="sep">September</string>
+    <string name="apr">April</string>
+    <string name="may">May</string>
+    <string name="mar">March</string>
+    <string name="feb">February</string>
+    <string name="jan">January</string>
+    <string name="selweek">Select week</string>
+    <string name="rterror">Runtime Error</string>
+    <string name="retdata">Getting data</string>
+    <string name="settitle">Settings</string>
+    <string name="group">GROUP</string>
+    <string name="letstart">Let\'s start\! Select group and week.</string>
 </resources>

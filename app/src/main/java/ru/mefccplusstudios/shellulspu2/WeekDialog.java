@@ -1,5 +1,6 @@
 package ru.mefccplusstudios.shellulspu2;
 
+import android.content.Context;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -9,16 +10,24 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import arch.views.DialogCore;
 
-public class WeekDialog extends DialogCore {
+import java.util.ArrayList;
+
+import abs.Window;
+import abs.parts.Bus;
+import abs.parts.interfaces.Eventable;
+
+public class WeekDialog extends Window {
     private final Button next, undo;
     private final TextView tvdate;
     private final LinearLayout calendar;
     private final WeekLine wl;
-    public WeekDialog(MainActivity context) {
+
+    private int FOCUS_MONTH = 0, FOCUS_YEAR = 0;
+    private final ArrayList<WeekLine> wls = new ArrayList<>();
+    public WeekDialog(Context context) {
         super(context);
-        setDialogTitle("Выберите неделю");
+        setWinTitle(context.getString(R.string.selweek));
 
         LayoutInflater lif = LayoutInflater.from(context);
         View v = lif.inflate(R.layout.data_picker, null);
@@ -40,131 +49,143 @@ public class WeekDialog extends DialogCore {
         wl.setClickable(false);
         calendar.addView(wl);
 
-
         next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                kernel.time.getYMApplyBy(1);
-                tvdate.setText(kernel.time.getNamedMonth(kernel.FOCUS_MONTH)+" "+kernel.FOCUS_YEAR);
-                prepareRangers();
+            @Override public void onClick(View view) {
+                slideTime(1);
+                tvdate.setText(Bus.time.getMonthName(FOCUS_MONTH)+" "+FOCUS_YEAR);
+                prepareWeeks();
             }
         });
         undo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                kernel.time.getYMApplyBy(-1);
-                tvdate.setText(kernel.time.getNamedMonth(kernel.FOCUS_MONTH)+" "+kernel.FOCUS_YEAR);
-                prepareRangers();
+            @Override public void onClick(View view) {
+                slideTime(-1);
+                tvdate.setText(Bus.time.getMonthName(FOCUS_MONTH)+" "+FOCUS_YEAR);
+                prepareWeeks();
             }
         });
 
     }
-    @Override public void styleHasBeenChanged() {
-        super.styleHasBeenChanged();
+    @Override public void event(String tag, Object packet) {
+        super.event(tag, packet);
+        tvdate.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
+        tvdate.setTextColor(Bus.style.MAIN_FONT_COLOR);
         for(int q=0; q<7; q++) {
-            wl.days[q].setTextColor(kernel.style.DIALOG_HEADER_COLOR);
-            wl.days[q].setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
+            wl.days[q].setTextColor(Bus.style.DIALOG_HEADER_COLOR);
+            wl.days[q].setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
         }
-        tvdate.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
-        tvdate.setTextColor(kernel.style.MAIN_FONT_COLOR);
-        wl.getLayoutParams().height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (int)(kernel.style.FONT_SIZE_SP*2.3f), context.getResources().getDisplayMetrics());
+        wl.STRLINE.setBackgroundColor(Bus.style.FIELD_COLOR);
+        wl.getLayoutParams().height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (int)(Bus.style.FONT_SIZE_SP*2.3f), getContext().getResources().getDisplayMetrics());
         wl.requestLayout();
-       // rootll.getBackground().setColorFilter(kernel.style.DIALOG_COLOR, PorterDuff.Mode.SRC_ATOP);
     }
+
     @Override public void show() {
-        tvdate.setText(kernel.time.getNamedMonth(kernel.FOCUS_MONTH)+" "+kernel.FOCUS_YEAR);
-        //TimeUtils.pullDateRangers(TimeUtils.TOTAL_MONTH, TimeUtils.TOTAL_YEAR);
-        prepareRangers();
+        tvdate.setText(Bus.time.getMonthName(FOCUS_MONTH)+" "+FOCUS_YEAR);
+        prepareWeeks();
         super.show();
     }
-    public void obtainChoose(int id) {
-        DateRange dr = kernel.time.drangers.get(id);
-        kernel.SAVED_WEEK = id;
-        kernel.SAVED_MONTH = kernel.FOCUS_MONTH;
-        kernel.SAVED_YEAR = kernel.FOCUS_YEAR;
-        dismiss();
-        context.updateUI();
-        context.buildRaspiByRange();
-    }
-    public void inflateWeeks() {
+    public void prepareWeeks() {
+        for(WeekLine wlz: wls) wl.UNLOCK = true;
         calendar.removeAllViews();
         calendar.addView(wl);
-        View str = new View(this.context);
-        str.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
-        str.setBackgroundColor(kernel.style.FIELD_COLOR);//this.context.getResources().getColor(R.color.dark_std_main));
-        calendar.addView(str);
-        for(int q=0; q<kernel.time.drangers.size(); q++) {
-            WeekLine wtmp = new WeekLine(context);
-            wtmp.WEEK_ID = q;
-            DateRange dr = kernel.time.drangers.get(q);
-            if(dr.BEGIN_DAY<dr.END_DAY) for(int e=0; e<7; e++) {
-                wtmp.days[e].setTextColor(kernel.style.MAIN_FONT_COLOR);
-                wtmp.days[q].setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
-                wtmp.days[e].setText(""+(int)(dr.BEGIN_DAY+e));
-            }else{
-                int end = dr.END_DAY;
-                int medium = 7;
-                while(end>0) {
-                    wtmp.days[medium-1].setText(""+end);
-                    if(q==0) wtmp.days[medium-1].setTextColor(kernel.style.MAIN_FONT_COLOR);
-                    else wtmp.days[medium-1].setTextColor(kernel.style.DISABLED_FONT_COLOR);
-                    end--;
-                    medium--;
-                }
-                for(int z=0; z<medium; z++) {
-                    wtmp.days[z].setText(""+(int)(dr.BEGIN_DAY+z));
-                    if(q!=0) wtmp.days[z].setTextColor(kernel.style.MAIN_FONT_COLOR);
-                    else wtmp.days[z].setTextColor(kernel.style.DISABLED_FONT_COLOR);
-                }
-            }
-            calendar.addView(wtmp);
-            View stmp = new View(this.context);
-            stmp.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
-            stmp.setBackgroundColor(kernel.style.FIELD_COLOR);
-            calendar.addView(stmp);
+        calendar.addView(wl.STRLINE);
+        DateRange[] drs = Bus.time.getMonthSlice(FOCUS_YEAR, FOCUS_MONTH);
+        for(int i=0; i<drs.length; i++) {
+            WeekLine twl = getFreeWeek();
+            twl.UNLOCK = false;
+            twl.WEEK_ID = i;
+            twl.fill(drs[i], i==0);
+            calendar.addView(twl);
+            calendar.addView(twl.STRLINE);
         }
     }
-
-
-    public void prepareRangers() {
-        kernel.time.pullDateRangers(kernel.FOCUS_MONTH, kernel.FOCUS_YEAR);
-        inflateWeeks();
+    public WeekLine getFreeWeek() {
+        WeekLine twl = null;
+        for(WeekLine wlz: wls) if(wlz.UNLOCK) { twl = wlz; break; }
+        if(twl == null) { twl = new WeekLine(getContext()); wls.add(twl); }
+        return twl;
     }
-    private class WeekLine extends LinearLayout {
-        private final MainActivity context;
+    public void slideTime(int amount) {
+        if(FOCUS_YEAR ==0 ) FOCUS_YEAR = Bus.time.TOTAL_YEAR; FOCUS_MONTH = Bus.time.TOTAL_MONTH;
+        FOCUS_MONTH += amount;
+        if(FOCUS_MONTH>11) {
+            FOCUS_YEAR++;
+            FOCUS_MONTH -= 12;
+        }else if(FOCUS_MONTH<0) {
+            FOCUS_YEAR--;
+            FOCUS_MONTH += 12;
+        }
+    }
+    public void obtainChoose(WeekLine link) {
+        Bus.data.SAVED_WEEK = link.WEEK_ID;
+        Bus.data.SAVED_MONTH = FOCUS_MONTH;
+        Bus.data.SAVED_YEAR = FOCUS_YEAR;
+        dismiss();
+        Bus.event("FOCUS_TO_MONTH", link);
+    }
+
+    private class WeekLine extends LinearLayout implements Eventable {
         private final TypedValue outValue = new TypedValue();
         public TextView days[] = new TextView[7];
         public int WEEK_ID = -1;
-        public WeekLine(MainActivity context) {
+        public boolean UNLOCK = true;
+        public final View STRLINE;
+
+        public DateRange LINK;
+        protected final WeekLine self = this;
+        public WeekLine(Context context) {
             super(context);
-            this.context = context;
-            this.context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+            this.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
             this.setBackgroundResource(outValue.resourceId);
             this.setOrientation(LinearLayout.HORIZONTAL);
             this.setClickable(true);
             this.setGravity(Gravity.CENTER_VERTICAL);
             this.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            this.getLayoutParams().height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (int)(kernel.style.FONT_SIZE_SP*2.3f), getResources().getDisplayMetrics());
+            this.getLayoutParams().height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (int)(Bus.style.FONT_SIZE_SP*2.3f), getResources().getDisplayMetrics());
             this.requestLayout();
             for(int q=0; q<7; q++) {
-                TextView tv = new TextView(this.context);
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, kernel.style.FONT_SIZE_SP);
-                tv.setTextColor(getResources().getColor(R.color.orange));
+                TextView tv = new TextView(this.getContext());
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
+                tv.setTextColor(Bus.style.MAIN_FONT_COLOR);
                 tv.setWidth(0);
                 tv.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f));
                 tv.setGravity(Gravity.CENTER);
                 days[q] = tv;
                 this.addView(tv);
             }
+            STRLINE = new View(context);
+            STRLINE.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
+            STRLINE.setBackgroundColor(Bus.style.FIELD_COLOR);
             this.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    obtainChoose(WEEK_ID);
+                @Override public void onClick(View view) {
+                    obtainChoose(self);
                 }
             });
 
 
         }
-
+        public void fill(DateRange dr, boolean isFirstWeek) {
+            if(dr.BEGIN_DAY<dr.END_DAY) for(int q=0; q<7; q++) days[q].setText((dr.BEGIN_DAY+q)+"");
+            else {
+                int tick = dr.END_DAY;
+                for(int q=6; q>-1; q--) {
+                    if (isFirstWeek) {
+                        if (tick > 0) days[q].setText(tick);
+                        else days[q].setText("");
+                    } else {
+                        if(tick>0) days[q].setText("");
+                        else days[q].setText(dr.BEGIN_DAY+q);
+                    }
+                    tick--;
+                }
+            }
+            LINK = dr;
+        }
+        @Override public void event(String tag, Object packet) {
+            for(int q=0; q<7; q++) {
+                days[q].setTextColor(Bus.style.MAIN_FONT_COLOR);
+                days[q].setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
+            }
+            STRLINE.setBackgroundColor(Bus.style.FIELD_COLOR);
+        }
     }
 }
