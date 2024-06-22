@@ -14,6 +14,7 @@ public final class Bus {
         Bus.time = time;
         Bus.data = data;
         GLOBAL = global;
+
         time.actual();
         data.loadSettings();
     }
@@ -30,5 +31,5 @@ public final class Bus {
     public static final String FONTS_CHANGED = "FONTS_SHEME_CHANGED";
 
     public static int ANY_BACK_THREAD = 0;
-    public static int RUN_UI_THREAD = 0;
+    public static int RUN_UI_THREAD = 1;
 }

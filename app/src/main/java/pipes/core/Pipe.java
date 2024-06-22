@@ -7,8 +7,9 @@ public abstract class Pipe {
         THREAD_POLICY = thread_policy;
         this.PID = PID;
     }
-
+    public abstract void next(Pipe next);
+    public abstract Pipe manager(String event);
     public abstract Fluid work(Fluid in);
-    public abstract  void connect(String trigger, Pipe connect);
-    public abstract void stop();
+    public abstract  void connect(Pipe connect);
+    public abstract void stop(boolean isStop);
 }

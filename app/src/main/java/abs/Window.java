@@ -32,7 +32,11 @@ public class Window extends Dialog implements Eventable {
         content = findViewById(R.id.dialogContent);
         rootll = findViewById(R.id.rootll);
         separat = findViewById(R.id.separator);
-
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                dismiss();
+            }
+        });
     }
     public LinearLayout getContent() {
         return content;

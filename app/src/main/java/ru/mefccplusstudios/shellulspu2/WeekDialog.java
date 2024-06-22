@@ -47,6 +47,11 @@ public class WeekDialog extends Window {
         wl.days[5].setText("сб");
         wl.days[6].setText("вс");
         wl.setClickable(false);
+
+        for(int q=0; q<7; q++) {
+            wl.days[q].setTextColor(Bus.style.DIALOG_HEADER_COLOR);
+            wl.days[q].setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
+        }
         calendar.addView(wl);
 
         next.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +84,7 @@ public class WeekDialog extends Window {
     }
 
     @Override public void show() {
+        if(FOCUS_YEAR == 0 ) { FOCUS_YEAR = Bus.time.TOTAL_YEAR; FOCUS_MONTH = Bus.time.TOTAL_MONTH; }
         tvdate.setText(Bus.time.getMonthName(FOCUS_MONTH)+" "+FOCUS_YEAR);
         prepareWeeks();
         super.show();
@@ -105,22 +111,25 @@ public class WeekDialog extends Window {
         return twl;
     }
     public void slideTime(int amount) {
-        if(FOCUS_YEAR ==0 ) FOCUS_YEAR = Bus.time.TOTAL_YEAR; FOCUS_MONTH = Bus.time.TOTAL_MONTH;
+        if(FOCUS_YEAR ==0 ) { FOCUS_YEAR = Bus.time.TOTAL_YEAR; FOCUS_MONTH = Bus.time.TOTAL_MONTH; }
         FOCUS_MONTH += amount;
-        if(FOCUS_MONTH>11) {
+        if(FOCUS_MONTH > 11) {
             FOCUS_YEAR++;
             FOCUS_MONTH -= 12;
-        }else if(FOCUS_MONTH<0) {
+        }else if(FOCUS_MONTH < 0) {
             FOCUS_YEAR--;
             FOCUS_MONTH += 12;
         }
     }
-    public void obtainChoose(WeekLine link) {
-        Bus.data.SAVED_WEEK = link.WEEK_ID;
-        Bus.data.SAVED_MONTH = FOCUS_MONTH;
-        Bus.data.SAVED_YEAR = FOCUS_YEAR;
+    public void obtainChoose(DateRange dr) {
+        Bus.data.YEAR_SBEGIN = dr.BEGIN_YEAR;
+        Bus.data.YEAR_SEND = dr.END_YEAR;
+        Bus.data.MONTH_SBEGIN = dr.BEGIN_MONTH;
+        Bus.data.MONTH_SEND = dr.END_MONTH;
+        Bus.data.DAY_SBEGIN = dr.BEGIN_DAY;
+        Bus.data.DAY_SEND = dr.END_DAY;
         dismiss();
-        Bus.event("FOCUS_TO_MONTH", link);
+        Bus.event("FOCUS_TO_MONTH", null);
     }
 
     private class WeekLine extends LinearLayout implements Eventable {
@@ -131,7 +140,7 @@ public class WeekDialog extends Window {
         public final View STRLINE;
 
         public DateRange LINK;
-        protected final WeekLine self = this;
+        //protected final WeekLine self = this;
         public WeekLine(Context context) {
             super(context);
             this.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
@@ -157,7 +166,7 @@ public class WeekDialog extends Window {
             STRLINE.setBackgroundColor(Bus.style.FIELD_COLOR);
             this.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
-                    obtainChoose(self);
+                    obtainChoose(LINK);
                 }
             });
 
@@ -169,11 +178,11 @@ public class WeekDialog extends Window {
                 int tick = dr.END_DAY;
                 for(int q=6; q>-1; q--) {
                     if (isFirstWeek) {
-                        if (tick > 0) days[q].setText(tick);
+                        if (tick > 0) days[q].setText(""+tick);
                         else days[q].setText("");
                     } else {
                         if(tick>0) days[q].setText("");
-                        else days[q].setText(dr.BEGIN_DAY+q);
+                        else days[q].setText(""+(dr.BEGIN_DAY+q));
                     }
                     tick--;
                 }

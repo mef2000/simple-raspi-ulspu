@@ -75,7 +75,7 @@ public class GroupPickerDialog extends Window {
                 GroupPickerDialog.this.dismiss();
                 Bus.data.SEARCH = pa.getItem(position);
                 Bus.data.FOCUS_TAB = Bus.data.ACTIVED_TAB;
-                Bus.event("LOAD_FOR_GROUP", null);
+                Bus.event("LOAD_FOR_DATA", null);
             }
         });
         tabs[0].setOnClickListener(new View.OnClickListener() {
@@ -112,22 +112,8 @@ public class GroupPickerDialog extends Window {
     }
 
     @Override public void show() {
-        if(Bus.data.GROUPS.isEmpty()) {
-            tabs[0].setEnabled(false);
-            Bus.event("LOAD_LIST", "groups");
-            setWinTitle("Загрузка данных...");//tvstat.setText("Загрузка данных...");
-        }
-        if(Bus.data.ROOMS.isEmpty()) {
-            tabs[2].setEnabled(false);
-            Bus.event("LOAD_LIST", "rooms");
-            setWinTitle("Загрузка данных...");//tvstat.setText("Загрузка данных...");
-        }
-        if(Bus.data.TEACHERS.isEmpty()) {
-            tabs[1].setEnabled(false);
-            Bus.event("LOAD_LIST", "teachers");
-            setWinTitle("Загрузка данных...");// tvstat.setText("Загрузка данных...");
-        }
         super.show();
+        updateState();
     }
     public void checkReady(int from) {
         tabs[from].setEnabled(true);
@@ -167,6 +153,11 @@ public class GroupPickerDialog extends Window {
                 tabs[q].setTextColor(getContext().getResources().getColor(R.color.white));
                 tabs[q].setBackgroundColor(Bus.style.FIELD_COLOR);
             }
+        }
+        switch(Bus.data.ACTIVED_TAB) {
+            case 0: if(Bus.data.GROUPS.isEmpty())  Bus.event("LOAD_LIST", "groups");
+            case 1: if(Bus.data.TEACHERS.isEmpty())  Bus.event("LOAD_LIST", "teachers");
+            case 2: if(Bus.data.ROOMS.isEmpty())  Bus.event("LOAD_LIST", "rooms");
         }
         checkReady(Bus.data.ACTIVED_TAB);
     }

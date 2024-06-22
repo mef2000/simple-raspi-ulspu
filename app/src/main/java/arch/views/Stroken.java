@@ -39,6 +39,7 @@ public class Stroken extends LinearLayout implements Eventable {
     public void merge(String lesson) {
         TextView title = new TextView(getContext()), desc = new TextView(getContext());
         title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
+        title.setTextColor(Bus.style.MAIN_FONT_COLOR);
         title.setTypeface(Typeface.DEFAULT_BOLD);
         title.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
@@ -61,15 +62,13 @@ public class Stroken extends LinearLayout implements Eventable {
             horv.setBackgroundColor(Bus.style.FIELD_COLOR);
             vertv.setBackgroundColor(Bus.style.FIELD_COLOR);
             tv.setTextColor(Bus.style.MAIN_FONT_COLOR);
-            for(TextView v: tpool) v.setTextColor(Bus.style.MAIN_FONT_COLOR);
-            for(TextView v: dpool) v.setTextColor(Bus.style.DISABLED_FONT_COLOR);
         }else if(Bus.FONTS_CHANGED.equals(tag)) {
             for(TextView v: tpool) {
                 v.setTextColor(Bus.style.MAIN_FONT_COLOR);
                 v.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
             }
             for(TextView v: dpool) {
-                v.setTextColor(Bus.style.MAIN_FONT_COLOR);
+                v.setTextColor(Bus.style.DISABLED_FONT_COLOR);
                 v.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
             }
             tv.setTextColor(Bus.style.MAIN_FONT_COLOR);

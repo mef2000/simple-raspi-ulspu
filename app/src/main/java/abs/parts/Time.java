@@ -31,18 +31,18 @@ public class Time {
     }
     public String getMonthName(int month) {
         switch(month) {
-            case Calendar.JANUARY: context.getString(R.string.jan);
-            case Calendar.FEBRUARY: context.getString(R.string.feb);
-            case Calendar.MARCH: context.getString(R.string.mar);
-            case Calendar.MAY: context.getString(R.string.may);
-            case Calendar.APRIL: context.getString(R.string.apr);
-            case Calendar.JUNE: context.getString(R.string.jun);
-            case Calendar.JULY: context.getString(R.string.jul);
-            case Calendar.AUGUST: context.getString(R.string.aug);
-            case Calendar.SEPTEMBER: context.getString(R.string.sep);
-            case Calendar.OCTOBER: context.getString(R.string.oct);
-            case Calendar.NOVEMBER: context.getString(R.string.nov);
-            case Calendar.DECEMBER: context.getString(R.string.dec);
+            case Calendar.JANUARY: return context.getString(R.string.jan);
+            case Calendar.FEBRUARY: return context.getString(R.string.feb);
+            case Calendar.MARCH: return context.getString(R.string.mar);
+            case Calendar.MAY: return context.getString(R.string.may);
+            case Calendar.APRIL: return context.getString(R.string.apr);
+            case Calendar.JUNE: return context.getString(R.string.jun);
+            case Calendar.JULY: return context.getString(R.string.jul);
+            case Calendar.AUGUST: return context.getString(R.string.aug);
+            case Calendar.SEPTEMBER: return context.getString(R.string.sep);
+            case Calendar.OCTOBER: return context.getString(R.string.oct);
+            case Calendar.NOVEMBER: return context.getString(R.string.nov);
+            case Calendar.DECEMBER: return context.getString(R.string.dec);
             default: return "Time::Internal Error";
         }
     }
@@ -83,12 +83,11 @@ public class Time {
         for(int i=0; i<weeks.length; i++) weeks[i] = getWeekSlice(year, month, 1+i*7);
         return weeks;
     }
-    public DateRange getSavedWeek() {
-       cal.clear();
-       cal.set(Calendar.YEAR, Bus.data.SAVED_YEAR);
-       cal.set(Calendar.WEEK_OF_MONTH, Bus.data.SAVED_WEEK);
-       return getWeekSlice(Bus.data.SAVED_YEAR, Bus.data.SAVED_MONTH, cal.get(Calendar.DAY_OF_MONTH));
+    public String getSavedWeek() {
+        return Bus.time.getNormalNumber(Bus.data.DAY_SBEGIN)+"."+Bus.time.getNormalNumber(Bus.data.MONTH_SBEGIN+1)+" - "+
+                Bus.time.getNormalNumber(Bus.data.DAY_SEND)+"."+Bus.time.getNormalNumber(Bus.data.MONTH_SEND+1);
     }
+
     public String packWithSlash(int year, int month, int day) {
         return getNormalNumber(day)+"/"+getNormalNumber(month+1)+"/"+year;
     }

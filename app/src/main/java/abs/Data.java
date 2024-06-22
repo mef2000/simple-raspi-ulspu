@@ -17,7 +17,8 @@ public class Data {
     private final SharedPreferences settings;
 
     public boolean isDebugMode = false;
-    public int SAVED_YEAR, SAVED_MONTH, SAVED_WEEK, FOCUS_TAB, ACTIVED_TAB;
+
+    public int YEAR_SBEGIN, YEAR_SEND, MONTH_SBEGIN, MONTH_SEND, DAY_SBEGIN, DAY_SEND, FOCUS_TAB, ACTIVED_TAB;
     public String SEARCH = "null";
 
     public ArrayList<String> GROUPS = new ArrayList<>();
@@ -38,10 +39,10 @@ public class Data {
         }
         less.add(df);
     }
-    public ArrayList<ArrayList<DataFill>> getLessonsByPeriod(DateRange dr) {
+    public ArrayList<ArrayList<DataFill>> getLessonsByPeriod() {
         ArrayList<ArrayList<DataFill>> tlessons = new ArrayList<>();
-        int START_ID = Integer.valueOf(dr.BEGIN_YEAR + Bus.time.getNormalNumber(dr.BEGIN_MONTH)+Bus.time.getNormalNumber(dr.BEGIN_DAY));
-        int END_ID = Integer.valueOf(dr.END_YEAR+ Bus.time.getNormalNumber(dr.END_MONTH)+Bus.time.getNormalNumber(dr.END_DAY));
+        int START_ID = Integer.valueOf(Bus.data.YEAR_SBEGIN + Bus.time.getNormalNumber(Bus.data.MONTH_SBEGIN)+Bus.time.getNormalNumber(Bus.data.DAY_SBEGIN));
+        int END_ID = Integer.valueOf(Bus.data.YEAR_SEND + Bus.time.getNormalNumber(Bus.data.MONTH_SEND)+Bus.time.getNormalNumber(Bus.data.DAY_SEND));
         Map<Integer, ArrayList<DataFill>> submap = filler.subMap(START_ID, END_ID+1);
         tlessons.addAll(submap.values());
         return tlessons;
@@ -56,9 +57,13 @@ public class Data {
     public void loadSettings() {
         this.isDebugMode = settings.getBoolean("debug_mode", false);
         this.SEARCH = settings.getString("group", "null");
-        this.SAVED_YEAR = settings.getInt("syear", Bus.time.TOTAL_YEAR);
-        this.SAVED_MONTH= settings.getInt("smonth", Bus.time.TOTAL_MONTH);
-        this.SAVED_WEEK= settings.getInt("sweek", 0);
+        this.YEAR_SBEGIN = settings.getInt("sbyear", Bus.time.TOTAL_YEAR);
+        this.YEAR_SEND = settings.getInt("seyear", Bus.time.TOTAL_YEAR);
+        this.MONTH_SBEGIN = settings.getInt("sbmonth", Bus.time.TOTAL_MONTH);
+        this.MONTH_SEND = settings.getInt("semonth", Bus.time.TOTAL_MONTH);
+        this.DAY_SBEGIN = settings.getInt("sbday", Bus.time.TOTAL_DAY);
+        this.DAY_SEND = settings.getInt("seday", Bus.time.TOTAL_DAY);
+
         this.FOCUS_TAB = settings.getInt("atab", 0);
         Bus.style.THEME_PARADIGM = settings.getInt("themer", 0);
         Bus.style.loadStyle(Bus.style.THEME_PARADIGM);
@@ -68,9 +73,14 @@ public class Data {
     }
     public void saveSettings() {
         SharedPreferences.Editor setedit = settings.edit();
-        setedit.putInt("syear", this.SAVED_YEAR);
-        setedit.putInt("smonth", this.SAVED_MONTH);
-        setedit.putInt("sweek", this.SAVED_WEEK);
+
+        setedit.putInt("sbyear", YEAR_SBEGIN);
+        setedit.putInt("seyear", YEAR_SEND);
+        setedit.putInt("sbmonth", MONTH_SBEGIN);
+        setedit.putInt("semonth", MONTH_SEND);
+        setedit.putInt("sbday", DAY_SBEGIN);
+        setedit.putInt("seday", DAY_SEND);
+
         setedit.putInt("atab", this.FOCUS_TAB);
         setedit.putBoolean("debug_mode", this.isDebugMode);
         setedit.putString("group", this.SEARCH);
