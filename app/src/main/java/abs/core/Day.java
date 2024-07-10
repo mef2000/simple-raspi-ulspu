@@ -1,4 +1,4 @@
-package abs.parts;
+package abs.core;
 
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -11,10 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import abs.parts.interfaces.Eventable;
-import arch.main.DataFill;
-import arch.views.Stroken;
-
 public class Day extends LinearLayout implements Eventable {
     private final TextView day;
     private final GradientDrawable gdraw;
@@ -26,16 +22,16 @@ public class Day extends LinearLayout implements Eventable {
 
         gdraw = new GradientDrawable();
         gdraw.setShape(GradientDrawable.RECTANGLE);
-        gdraw.setStroke((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, context.getResources().getDisplayMetrics()), Bus.style.FIELD_COLOR);
+        gdraw.setStroke((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, context.getResources().getDisplayMetrics()), Bus.style.MAIN_COLOR);
         gdraw.setCornerRadius((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, context.getResources().getDisplayMetrics()));
         this.setBackground(gdraw);
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         lp.setMargins(0, 0, 0, Bus.style.MAJOR_PADDING);
         this.setLayoutParams(lp);
 
         day = new TextView(context);
-        day.setTextColor(Bus.style.MAIN_FONT_COLOR);
+        day.setTextColor(Bus.style.FONT_COLOR);
         day.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
         day.setTypeface(Typeface.DEFAULT_BOLD);
     }
@@ -62,11 +58,12 @@ public class Day extends LinearLayout implements Eventable {
 
     @Override public void event(String tag, Object packet) {
         if(Bus.COLORS_CHANGED.equals(tag)) {
-            day.setTextColor(Bus.style.MAIN_FONT_COLOR);
-            gdraw.setColor(Bus.style.FIELD_COLOR);
+            day.setTextColor(Bus.style.FONT_COLOR);
+            gdraw.setStroke((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getContext().getResources().getDisplayMetrics()), Bus.style.MAIN_COLOR);
+            //gdraw.setColor(Bus.style.MAIN_COLOR);
         }else if(Bus.FONTS_CHANGED.equals(tag)) {
             day.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
-            day.setTextColor(Bus.style.MAIN_FONT_COLOR);
+            day.setTextColor(Bus.style.FONT_COLOR);
         }
         for(Map.Entry<String, Stroken> str : strline.entrySet()) str.getValue().event(tag, packet);
     }

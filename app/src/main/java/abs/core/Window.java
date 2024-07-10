@@ -1,4 +1,4 @@
-package abs;
+package abs.core;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import abs.parts.Bus;
-import abs.parts.interfaces.Eventable;
 import ru.mefccplusstudios.shellulspu2.R;
 
 public class Window extends Dialog implements Eventable {
@@ -45,12 +43,12 @@ public class Window extends Dialog implements Eventable {
 
     @Override public void event(String tag, Object packet) {
         if(Bus.COLORS_CHANGED.equals(tag)) {
-            rootll.setBackgroundColor(Bus.style.DIALOG_COLOR);
-            tvtitle.setTextColor(Bus.style.DIALOG_HEADER_COLOR);
-            separat.setBackgroundColor(Bus.style.DIALOG_HEADER_COLOR);
+            rootll.setBackgroundColor(Bus.style.BACKGROUND_COLOR);
+            tvtitle.setTextColor(Bus.style.MAIN_COLOR);
+            separat.setBackgroundColor(Bus.style.MAIN_COLOR);
         }else if(Bus.FONTS_CHANGED.equals(tag)) {
             tvtitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
-            tvtitle.setTextColor(Bus.style.DIALOG_HEADER_COLOR);
+            tvtitle.setTextColor(Bus.style.MAIN_COLOR);
         }
     }
 }

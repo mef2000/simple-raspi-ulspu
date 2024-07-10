@@ -1,10 +1,9 @@
-package abs.parts;
+package abs.core;
 
 import android.content.Context;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import ru.mefccplusstudios.shellulspu2.DateRange;
 import ru.mefccplusstudios.shellulspu2.R;

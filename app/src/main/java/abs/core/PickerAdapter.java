@@ -1,4 +1,4 @@
-package arch.adapters;
+package abs.core;
 
 import android.content.Context;
 import android.util.TypedValue;
@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import abs.parts.Bus;
 import ru.mefccplusstudios.shellulspu2.R;
 
 public class PickerAdapter extends ArrayAdapter<String> {
@@ -26,7 +25,7 @@ public class PickerAdapter extends ArrayAdapter<String> {
         String posi = getItem(position);
         TextView tv = v.findViewById(R.id.lwGroup);
         tv.setText(posi);
-        tv.setTextColor(Bus.style.MAIN_FONT_COLOR);
+        tv.setTextColor(Bus.style.FONT_COLOR);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
 
         return v;

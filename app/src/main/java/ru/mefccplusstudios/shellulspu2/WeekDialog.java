@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import abs.Window;
-import abs.parts.Bus;
-import abs.parts.interfaces.Eventable;
+import abs.core.Window;
+import abs.core.Bus;
+import abs.core.Eventable;
 
 public class WeekDialog extends Window {
     private final Button next, undo;
@@ -49,7 +49,7 @@ public class WeekDialog extends Window {
         wl.setClickable(false);
 
         for(int q=0; q<7; q++) {
-            wl.days[q].setTextColor(Bus.style.DIALOG_HEADER_COLOR);
+            wl.days[q].setTextColor(Bus.style.MAIN_COLOR);
             wl.days[q].setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
         }
         calendar.addView(wl);
@@ -73,12 +73,12 @@ public class WeekDialog extends Window {
     @Override public void event(String tag, Object packet) {
         super.event(tag, packet);
         tvdate.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
-        tvdate.setTextColor(Bus.style.MAIN_FONT_COLOR);
+        tvdate.setTextColor(Bus.style.FONT_COLOR);
         for(int q=0; q<7; q++) {
-            wl.days[q].setTextColor(Bus.style.DIALOG_HEADER_COLOR);
+            wl.days[q].setTextColor(Bus.style.MAIN_COLOR);
             wl.days[q].setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
         }
-        wl.STRLINE.setBackgroundColor(Bus.style.FIELD_COLOR);
+        wl.STRLINE.setBackgroundColor(Bus.style.MAIN_COLOR);
         wl.getLayoutParams().height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (int)(Bus.style.FONT_SIZE_SP*2.3f), getContext().getResources().getDisplayMetrics());
         wl.requestLayout();
     }
@@ -148,13 +148,13 @@ public class WeekDialog extends Window {
             this.setOrientation(LinearLayout.HORIZONTAL);
             this.setClickable(true);
             this.setGravity(Gravity.CENTER_VERTICAL);
-            this.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
             this.getLayoutParams().height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (int)(Bus.style.FONT_SIZE_SP*2.3f), getResources().getDisplayMetrics());
             this.requestLayout();
             for(int q=0; q<7; q++) {
                 TextView tv = new TextView(this.getContext());
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
-                tv.setTextColor(Bus.style.MAIN_FONT_COLOR);
+                tv.setTextColor(Bus.style.FONT_COLOR);
                 tv.setWidth(0);
                 tv.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f));
                 tv.setGravity(Gravity.CENTER);
@@ -162,9 +162,9 @@ public class WeekDialog extends Window {
                 this.addView(tv);
             }
             STRLINE = new View(context);
-            STRLINE.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
-            STRLINE.setBackgroundColor(Bus.style.FIELD_COLOR);
-            this.setOnClickListener(new View.OnClickListener() {
+            STRLINE.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
+            STRLINE.setBackgroundColor(Bus.style.MAIN_COLOR);
+            this.setOnClickListener(new OnClickListener() {
                 @Override public void onClick(View view) {
                     obtainChoose(LINK);
                 }
@@ -191,10 +191,10 @@ public class WeekDialog extends Window {
         }
         @Override public void event(String tag, Object packet) {
             for(int q=0; q<7; q++) {
-                days[q].setTextColor(Bus.style.MAIN_FONT_COLOR);
+                days[q].setTextColor(Bus.style.FONT_COLOR);
                 days[q].setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
             }
-            STRLINE.setBackgroundColor(Bus.style.FIELD_COLOR);
+            STRLINE.setBackgroundColor(Bus.style.MAIN_COLOR);
         }
     }
 }

@@ -12,9 +12,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import abs.Window;
-import abs.parts.Bus;
-import arch.adapters.PickerAdapter;
+import abs.core.Window;
+import abs.core.Bus;
+import abs.core.PickerAdapter;
 
 public class GroupPickerDialog extends Window {
     private final PickerAdapter pa;
@@ -103,8 +103,8 @@ public class GroupPickerDialog extends Window {
     @Override public void event(String tag, Object packet) {
         super.event(tag, packet);
         search.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
-        search.setTextColor(Bus.style.MAIN_FONT_COLOR);
-        search.setHintTextColor(Bus.style.DISABLED_FONT_COLOR);
+        search.setTextColor(Bus.style.FONT_COLOR);
+        search.setHintTextColor(Bus.style.SUBFONT_COLOR);
         for(int q=0; q<3; q++) {
             tabs[q].setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
         }
@@ -126,6 +126,7 @@ public class GroupPickerDialog extends Window {
             }
         }
     }
+
     public void updateGroups() {
         pa.clear();
         pa.addAll(Bus.data.GROUPS);
@@ -147,17 +148,12 @@ public class GroupPickerDialog extends Window {
     public void updateState() {
         for(int q=0; q<3; q++) {
             if(q!=Bus.data.ACTIVED_TAB) {
-                tabs[q].setTextColor(Bus.style.DISABLED_FONT_COLOR);
+                tabs[q].setTextColor(Bus.style.SUBFONT_COLOR);
                 tabs[q].setBackgroundColor(getContext().getResources().getColor(android.R.color.transparent));
             }else {
                 tabs[q].setTextColor(getContext().getResources().getColor(R.color.white));
-                tabs[q].setBackgroundColor(Bus.style.FIELD_COLOR);
+                tabs[q].setBackgroundColor(Bus.style.MAIN_COLOR);
             }
-        }
-        switch(Bus.data.ACTIVED_TAB) {
-            case 0: if(Bus.data.GROUPS.isEmpty())  Bus.event("LOAD_LIST", "groups");
-            case 1: if(Bus.data.TEACHERS.isEmpty())  Bus.event("LOAD_LIST", "teachers");
-            case 2: if(Bus.data.ROOMS.isEmpty())  Bus.event("LOAD_LIST", "rooms");
         }
         checkReady(Bus.data.ACTIVED_TAB);
     }

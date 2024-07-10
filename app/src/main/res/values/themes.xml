@@ -4,7 +4,7 @@
         <item name="android:colorAccent">@color/grey_ultra</item>
         <item name="android:colorPrimary">@color/grey_light</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowFullscreen">false</item>
     </style>
     <style name="animationChooser">
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>

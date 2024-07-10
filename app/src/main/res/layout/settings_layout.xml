@@ -53,11 +53,29 @@
                 android:layout_width="54dp"
                 android:layout_height="wrap_content"/>
     </RelativeLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content">
     <CheckBox
         android:id="@+id/chk"
         android:text="Режим отчета об ошибке"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+    <CheckBox
+        android:layout_marginLeft="3dp"
+        android:id="@+id/statbar"
+        android:text="Убрать статус-бар"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <TextView
+        android:layout_marginTop="5dp"
+        android:id="@+id/copyF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(C) Мангушев Эдуард, 2024 (ver. AB240622/G0)"/>
 </LinearLayout>
 
 </ScrollView>

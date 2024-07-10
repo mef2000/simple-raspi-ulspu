@@ -1,4 +1,4 @@
-package arch.main;
+package abs.core;
 
 public class DataFill implements  Comparable<DataFill> {
     public int START_HOUR, END_HOUR, START_MINS, END_MINS, YEAR, MONTH, DAY;

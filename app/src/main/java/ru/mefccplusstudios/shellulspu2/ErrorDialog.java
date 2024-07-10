@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import abs.Window;
-import abs.parts.Bus;
+import abs.core.Window;
+import abs.core.Bus;
 
 public class ErrorDialog extends Window {
     private final TextView tverror;
@@ -20,11 +20,11 @@ public class ErrorDialog extends Window {
         tverror = v.findViewById(R.id.errorD);
     }
     public void show(String message) {
-        tverror.setText(message);
+        tverror.setText(message); super.show();
     }
     @Override public void event(String tag, Object packet) {
         super.event(tag, packet);
         tverror.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
-        tverror.setTextColor(Bus.style.MAIN_FONT_COLOR);
+        tverror.setTextColor(Bus.style.FONT_COLOR);
     }
 }

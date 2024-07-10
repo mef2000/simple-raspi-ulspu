@@ -1,4 +1,4 @@
-package arch.views;
+package abs.core;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import abs.parts.Bus;
-import abs.parts.interfaces.Eventable;
 import ru.mefccplusstudios.shellulspu2.R;
 
 public class Stroken extends LinearLayout implements Eventable {
@@ -29,22 +27,22 @@ public class Stroken extends LinearLayout implements Eventable {
         tv = v.findViewById(R.id.idTime);
         horv = v.findViewById(R.id.horV);
         vertv = v.findViewById(R.id.verV);
-        horv.setBackgroundColor(Bus.style.FIELD_COLOR);
-        vertv.setBackgroundColor(Bus.style.FIELD_COLOR);
+        horv.setBackgroundColor(Bus.style.MAIN_COLOR);
+        vertv.setBackgroundColor(Bus.style.MAIN_COLOR);
         tv.setText(time_range);
-        tv.setTextColor(Bus.style.MAIN_FONT_COLOR);
+        tv.setTextColor(Bus.style.FONT_COLOR);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
         this.addView(v);
     }
     public void merge(String lesson) {
         TextView title = new TextView(getContext()), desc = new TextView(getContext());
         title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
-        title.setTextColor(Bus.style.MAIN_FONT_COLOR);
+        title.setTextColor(Bus.style.FONT_COLOR);
         title.setTypeface(Typeface.DEFAULT_BOLD);
         title.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
         desc.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
-        desc.setTextColor(Bus.style.DISABLED_FONT_COLOR);
+        desc.setTextColor(Bus.style.SUBFONT_COLOR);
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         params.setMargins(0, 0, 0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics()));
         desc.setLayoutParams(params);
@@ -58,21 +56,20 @@ public class Stroken extends LinearLayout implements Eventable {
     }
 
     @Override public void event(String tag, Object packet) {
-        if(Bus.COLORS_CHANGED.equals(tag)) {
-            horv.setBackgroundColor(Bus.style.FIELD_COLOR);
-            vertv.setBackgroundColor(Bus.style.FIELD_COLOR);
-            tv.setTextColor(Bus.style.MAIN_FONT_COLOR);
-        }else if(Bus.FONTS_CHANGED.equals(tag)) {
+        if(Bus.COLORS_CHANGED.equals(tag)||Bus.FONTS_CHANGED.equals(tag)) {
+            horv.setBackgroundColor(Bus.style.MAIN_COLOR);
+            vertv.setBackgroundColor(Bus.style.MAIN_COLOR);
             for(TextView v: tpool) {
-                v.setTextColor(Bus.style.MAIN_FONT_COLOR);
+                v.setTextColor(Bus.style.FONT_COLOR);
                 v.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
             }
             for(TextView v: dpool) {
-                v.setTextColor(Bus.style.DISABLED_FONT_COLOR);
+                v.setTextColor(Bus.style.SUBFONT_COLOR);
                 v.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
             }
-            tv.setTextColor(Bus.style.MAIN_FONT_COLOR);
+            tv.setTextColor(Bus.style.FONT_COLOR);
             tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, Bus.style.FONT_SIZE_SP);
+            this.setBackgroundColor(Bus.style.BACKGROUND_COLOR);
         }
     }
 }

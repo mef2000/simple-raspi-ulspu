@@ -1,4 +1,4 @@
-package abs;
+package abs.core;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,15 +8,13 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import abs.parts.Bus;
-import arch.main.DataFill;
-import ru.mefccplusstudios.shellulspu2.DateRange;
 
 public class Data {
     private final Context context;
     private final SharedPreferences settings;
 
     public boolean isDebugMode = false;
+    public boolean isBarSupport = true;
 
     public int YEAR_SBEGIN, YEAR_SEND, MONTH_SBEGIN, MONTH_SEND, DAY_SBEGIN, DAY_SEND, FOCUS_TAB, ACTIVED_TAB;
     public String SEARCH = "null";
@@ -56,6 +54,7 @@ public class Data {
     }
     public void loadSettings() {
         this.isDebugMode = settings.getBoolean("debug_mode", false);
+        this.isBarSupport = settings.getBoolean("bar_mode", true);
         this.SEARCH = settings.getString("group", "null");
         this.YEAR_SBEGIN = settings.getInt("sbyear", Bus.time.TOTAL_YEAR);
         this.YEAR_SEND = settings.getInt("seyear", Bus.time.TOTAL_YEAR);
@@ -83,6 +82,7 @@ public class Data {
 
         setedit.putInt("atab", this.FOCUS_TAB);
         setedit.putBoolean("debug_mode", this.isDebugMode);
+        setedit.putBoolean("bar_mode", this.isBarSupport);
         setedit.putString("group", this.SEARCH);
         setedit.putInt("themer", Bus.style.THEME_PARADIGM);
         setedit.putInt("fsize", Bus.style.FONT_SIZE_SP);

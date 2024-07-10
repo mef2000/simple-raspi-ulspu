@@ -1,7 +1,4 @@
-package abs.parts;
-
-import abs.Data;
-import abs.parts.interfaces.Eventable;
+package abs.core;
 
 public final class Bus {
     public static Style style;
@@ -17,6 +14,7 @@ public final class Bus {
 
         time.actual();
         data.loadSettings();
+
     }
     public static void disconnect() { //Fix Android memory leak... Broken link to Conxtext-ref objects, call in onStop/onDestroy
         style = null;

@@ -5,7 +5,7 @@
     <color name="orange">#E75427</color>
     <color name="phiol">#72399F</color>
     <color name="grey">#121212</color>
-    <color name="grey_light">#212121</color>
+    <color name="grey_light">#595959</color>
     <color name="grey_dedark">#424242</color>
     <color name="grey_ultra">#6D6D6D</color>
 </resources>
